@@ -52,6 +52,11 @@ const analyzeSprintRisks = async (
       ? getRemainingSprintDays(sprintContext.endDate)
       : null;
 
+    const commitInfo = commitsByIssueKey.get(issueKey);
+    const daysSinceLastCommit = commitInfo
+      ? getStaleDays(commitInfo.lastCommitAt)
+      : Infinity;
+
     // Skip the healthy states states
     if (status && shouldTrackIssue(issue, sprintContext)) {
       /**
@@ -67,10 +72,6 @@ const analyzeSprintRisks = async (
       /**
        *  SIGNAL 2: Stale issue
        */
-      const commitInfo = commitsByIssueKey.get(issueKey);
-      const daysSinceLastCommit = commitInfo
-        ? getStaleDays(commitInfo.lastCommitAt)
-        : Infinity;
       if (status === TicketState.IN_PROGRESS && daysSinceLastCommit > 2) {
         score += RiskScore.LOW;
       }
@@ -116,11 +117,13 @@ const analyzeSprintRisks = async (
         riskScore: Math.min(score, 100),
         signals: {
           noCommits: !commitsByIssueKey.has(issueKey),
+          daysSinceLastCommit,
           staleDays: daysStale,
           sprintEnding: remainingSprintDays
             ? remainingSprintDays <= SPRINT_END_THRESHOLD
             : false,
           missingMR: riskSignals.missingMR,
+          ownershipRisk: !issue.fields.assignee,
         },
       });
     }

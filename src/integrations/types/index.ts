@@ -32,9 +32,9 @@ export type JiraFieldT = {
 };
 
 export type SprintIssueT = {
-  expand: string;
+  expand?: string;
   id: string;
-  self: string;
+  self?: string;
   key: string;
   fields: SprintIssueFieldsT;
 };
@@ -43,17 +43,17 @@ export type SprintIssueT = {
  * Sub types used for Sprint Issue
  */
 type SprintIssueFieldsT = {
-  flagged: boolean;
+  flagged?: boolean;
   sprint?: SprintDetailT;
-  project: SprintProjectT;
+  project?: SprintProjectT;
   summary: string;
   description: string;
-  comment: SprintIssueCommentT;
+  comment?: SprintIssueCommentT;
   epic?: SprintEpicT;
-  worklog: SprintWorklogT;
-  updated: string;
+  worklog?: SprintWorklogT;
+  updated?: string;
   created: string;
-  timetracking: any;
+  timetracking?: any;
   parent?: {
     id: string;
     key: string;
@@ -70,9 +70,9 @@ type SprintIssueFieldsT = {
     id: string;
   };
   status?: {
-    description: string;
+    description?: string;
     name: string;
-    id: string;
+    id?: string;
   };
   statuscategorychangedate?: string;
   timeestimate?: string;
@@ -91,7 +91,7 @@ type SprintIssueFieldsT = {
   /**
    * consists the attached links and PRs
    */
-  development: string;
+  development?: string;
 };
 
 type IssueCreatorT = {

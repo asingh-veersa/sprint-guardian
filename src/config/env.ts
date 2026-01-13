@@ -4,6 +4,9 @@ dotenv.config();
 
 const env = {
   port: process.env.PORT,
+  config: {
+    scenario: process.env.SPRINT_GUARDIAN_SCENARIO,
+  },
   jira: {
     baseUrl: process.env.JIRA_BASE_URL,
     email: process.env.JIRA_EMAIL,
@@ -35,8 +38,8 @@ const env = {
     model: process.env.GEMINI_MODEL,
   },
   customFields: {
-    issue: process.env.CUSTOM_ISSUE_FIELDS
-  }
+    issue: process.env.CUSTOM_ISSUE_FIELDS,
+  },
 };
 
 export default env;

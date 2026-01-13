@@ -13,42 +13,51 @@ export const performLlmReasoning = async (
   const prompt = `
 You are an AI Sprint Guardian.
 
-Your role is to reason over PRE-DETECTED sprint risks.
-Do NOT invent new risks or issue keys.
-Only analyze the risks provided below.
+You are given detected sprint risks along with the exact signals that caused each risk.
+
+Each signal represents factual evidence collected by the system.
+Your job is to:
+- Interpret the signals
+- Assign a severity (HIGH, MEDIUM, LOW)
+- Explain the risk using the signals
+- Suggest a concrete next action
+
+Signal definitions:
+- noCommits: Issue has no GitLab commits linked
+- daysSinceLastCommit: Days since last commit (null means no commits)
+- staleDays: Days since Jira issue was last updated
+- sprintEnding: Sprint has 2 days or less remaining
+- missingMR: Issue is in Code Review but no merge request linked
+- ownershipRisk: Issue has no assignee
 
 Sprint context:
 ${JSON.stringify(sprintContext, null, 2)}
 
-Detected risks (source of truth):
+Detected risks:
 ${JSON.stringify(risks, null, 2)}
 
-Severity rules:
-- HIGH: Likely to impact sprint goal AND < 3 days remaining
-- MEDIUM: Risky but recoverable with action
-- LOW: Awareness only, no immediate action required
+Rules:
+- Use the signals explicitly in your reasoning
+- Do NOT invent facts
+- One output per input risk
+- Preserve issueKey
+- Return valid JSON only
+- No markdown
 
-For each risk, return JSON in this EXACT format:
+Return format:
 [
   {
     "issueKey": "AUTH-123",
     "severity": "HIGH | MEDIUM | LOW",
-    "reason": "Why this is risky in THIS sprint",
-    "suggestedAction": "One concrete next step the team can take"
+    "reason": "Clear explanation referencing the signals",
+    "suggestedAction": "Concrete, human-actionable step"
   }
 ]
-
-Rules:
-- Use ONLY issueKeys from detected risks
-- Be concise and actionable
-- No markdown
-- Return VALID JSON ONLY
 `;
 
   const llmMockModeEnabled = env.llmConfig.enableMockMode;
   const response =
     llmMockModeEnabled === true ? mockLLMresponse : await callGenAI(prompt);
-
 
   try {
     if (!response) {

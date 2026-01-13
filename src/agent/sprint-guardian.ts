@@ -11,9 +11,17 @@ import {
   logSuccess,
   logWarning,
 } from "../utils/terminal-ui.utils";
+import scenarios from "../mock/scenarios";
 
 export const runSprintGuardian = async () => {
+  const scenarioName = env.config.scenario;
+  const scenario = scenarioName ? scenarios[scenarioName] : null;
+
   logSection("Sprint Guardian Activated 🛡️");
+
+  if (scenario) {
+    console.info(`Mock environment activated - '${scenario.name}'`);
+  }
 
   const boardId = Number(env.jira.boardId);
 
@@ -28,16 +36,17 @@ export const runSprintGuardian = async () => {
   const observeStep = createStep("Observing sprint signals...");
   observeStep.start();
 
-  const sprintContext = await getActiveSprint(boardId);
+  const sprintContext = scenario
+    ? scenario.sprintContext
+    : await getActiveSprint(boardId);
   if (!sprintContext) {
     logWarning("No active sprint found");
     return;
   }
 
-  const [issues, commits] = await Promise.all([
-    getActiveSprintIssues(boardId),
-    getRecentCommits(),
-  ]);
+  const [issues, commits] = scenario
+    ? [scenario.issues, scenario.commits]
+    : await Promise.all([getActiveSprintIssues(boardId), getRecentCommits()]);
 
   observeStep.succeed(
     `Observed ${issues.length} issues and ${commits.length} commits`
@@ -54,6 +63,8 @@ export const runSprintGuardian = async () => {
     analyzeStep.succeed("No sprint risks detected 🎉");
     return;
   }
+
+  console.log("risks: ", risks);
 
   analyzeStep.warn(`Detected ${risks.length} potential risks`);
 

@@ -10,9 +10,11 @@ export type RiskT = {
 
 export type RiskSignalsT = {
   noCommits: boolean;
+  daysSinceLastCommit: number | null;
   staleDays: number;
   sprintEnding: boolean;
   missingMR?: boolean;
+  ownershipRisk?: boolean;
 };
 
 export type LlmInsightT = {
