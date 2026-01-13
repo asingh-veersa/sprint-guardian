@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"useUnknownInCatchVariables": false,
+		"target": "es2020",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"noErrorTruncation": true,
+		"incremental": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"types": ["node"]
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
+}
