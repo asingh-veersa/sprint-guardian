@@ -8,10 +8,13 @@ import {
   RiskScore,
   TicketState,
 } from "../utils/agent.utils";
-import { sendSlackMessage } from "../integrations/slack";
-
-const RISK_THRESHOLD: number = 35;
-const SPRINT_END_THRESHOLD: number = 2;
+import anaylzeCommitSignal from "./risks/without-commits";
+import anaylzeStaleSignal from "./risks/stale-issue";
+import { RISK_THRESHOLD, SPRINT_END_THRESHOLD } from "./config";
+import anaylzeSprintNearEndSignal from "./risks/sprint-near-end-issue";
+import anaylzeOwnershipSignal from "./risks/ownership-risk";
+import anaylzeMissingMRSignal from "./risks/missing-merge-request";
+import analyzeLateStartRisk from "./risks/late-start";
 
 const shouldTrackIssue = (
   issue: SprintIssueT,
@@ -43,11 +46,12 @@ const analyzeSprintRisks = async (
   for (const issue of issues) {
     let riskSignals: Partial<RiskSignalsT> = { missingMR: false };
     let score = 0;
-    const status = getIssueStatus(issue);
+    const status = getIssueStatus(issue) as TicketState;
     const issueKey = issue.key;
-    const lastUpdated = DateTime.fromISO(issue.fields?.updated);
+    const lastUpdated =
+      issue.fields?.updated && DateTime.fromISO(issue.fields?.updated);
     const storyPoints = Number(issue.fields.story_point_estimate ?? "0");
-    const daysStale = getStaleDays(lastUpdated);
+    const daysStale = lastUpdated ? getStaleDays(lastUpdated) : 0;
     const remainingSprintDays = sprintContext.endDate
       ? getRemainingSprintDays(sprintContext.endDate)
       : null;
@@ -59,54 +63,37 @@ const analyzeSprintRisks = async (
 
     // Skip the healthy states states
     if (status && shouldTrackIssue(issue, sprintContext)) {
-      /**
-       * SIGNAL 1: In progress but no commits
-       */
-      if (
-        status === TicketState.IN_PROGRESS &&
-        !commitsByIssueKey.has(issueKey)
-      ) {
-        score += RiskScore.LOW;
-      }
+      // SIGNAL 1: In progress but no commits
+      score += anaylzeCommitSignal(
+        status as TicketState,
+        commitsByIssueKey.has(issueKey)
+      );
 
-      /**
-       *  SIGNAL 2: Stale issue
-       */
-      if (status === TicketState.IN_PROGRESS && daysSinceLastCommit > 2) {
-        score += RiskScore.LOW;
-      }
+      // SIGNAL 2: Stale issue
+      score += anaylzeStaleSignal(status, daysSinceLastCommit);
 
       /**
        * SIGNAL 3: Sprint near end or story points are more than remaining sprint days
        *  - Only stalled in-progress work near sprint end escalates
        *  - Active work stays quiet
        */
-      if (
-        remainingSprintDays !== null &&
-        remainingSprintDays <= SPRINT_END_THRESHOLD &&
-        status === TicketState.IN_PROGRESS &&
-        daysStale >= 1
-      ) {
-        score += RiskScore.HIGH;
+      score += anaylzeSprintNearEndSignal(
+        status,
+        daysStale,
+        remainingSprintDays
+      );
+
+      // SIGNAL 4: Ownership risk
+      score += anaylzeOwnershipSignal(issue);
+
+      // SIGNAL 5: Issue is in Code Review but missing attached Merge request links
+      riskSignals.missingMR = anaylzeMissingMRSignal(issue);
+      if (riskSignals.missingMR) {
+        score += RiskScore.LOW;
       }
 
-      /**
-       * SIGNAL 4: Ownership risk
-       */
-      if (!issue.fields.assignee) {
-        score += RiskScore.MEDIUM;
-      }
-
-      /**
-       * SIGNAL 5: Issue is in Code Review but missing attached Merge request links
-       */
-      if (status === TicketState.CODE_REVIEW) {
-        const development = issue.fields.development ?? "";
-
-        if (!development.includes("pullrequest=")) {
-          riskSignals.missingMR = true;
-        }
-      }
+      // SIGNAL 6: Issue is picked late - story points > left sprint
+      score += analyzeLateStartRisk(status, storyPoints, remainingSprintDays);
     }
 
     if (score > RISK_THRESHOLD) {
@@ -127,26 +114,6 @@ const analyzeSprintRisks = async (
         },
       });
     }
-
-    // in progress but no commits
-    // if (status === "In Progress" && !commitsByIssueKey.has(issueKey)) {
-    //   risks.push({
-    //     type: "NO_CODE_ACTIVITY",
-    //     issueKey,
-    //     summary: issue.fields.summary,
-    //     message: "Marked In Progress but no commits found",
-    //   });
-    // }
-
-    // // to do but commits exists
-    // if (status === "To Do" && commitsByIssueKey.has(issueKey)) {
-    //   risks.push({
-    //     type: "STATUS_MISMATCH",
-    //     issueKey,
-    //     summary: issue.fields.summary,
-    //     message: "Commits exist but Jira issue still To Do",
-    //   });
-    // }
   }
 
   return risks;

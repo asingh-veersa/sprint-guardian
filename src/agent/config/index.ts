@@ -1,0 +1,4 @@
+const RISK_THRESHOLD: number = 30;
+const SPRINT_END_THRESHOLD: number = 2;
+
+export { RISK_THRESHOLD, SPRINT_END_THRESHOLD };

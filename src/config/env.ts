@@ -14,7 +14,7 @@ const env = {
     boardId: process.env.JIRA_BOARD_ID,
   },
   llmConfig: {
-    enableMockMode: process.env.ENABLE_MOCK_LLM ?? false,
+    enableMockMode: process.env.ENABLE_MOCK_LLM === "true",
   },
   openAi: {
     token: process.env.OPENAI_API_KEY,
@@ -39,6 +39,10 @@ const env = {
   },
   customFields: {
     issue: process.env.CUSTOM_ISSUE_FIELDS,
+  },
+  mongo: {
+    uri: process.env.MONGODB_URI,
+    dbName: process.env.MONGODB_DATABASE,
   },
 };
 
