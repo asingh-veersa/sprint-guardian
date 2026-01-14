@@ -71,7 +71,7 @@ export const runSprintGuardian = async () => {
 
   const risks = await analyzeSprintRisks(issues, commits, sprintContext);
 
-  console.log("risks: ", risks);
+  // console.log("risks: ", risks);
 
   analyzeStep.warn(`Detected ${risks.length} potential risks`);
 
@@ -105,7 +105,7 @@ export const runSprintGuardian = async () => {
    */
   const actStep = createStep("Notifying team via Slack...");
   actStep.start();
-  // await sendSlackMessage(formatSlackMessage(insights));
+  await sendSlackMessage(formatSlackMessage(insights));
   actStep.succeed("Slack notification sent 🚀");
 
   logSuccess("Sprint Guardian cycle completed");
