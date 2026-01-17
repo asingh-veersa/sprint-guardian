@@ -2,10 +2,15 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const isProductionActive: boolean = process.env.NODE_ENV === "production";
+
 const env = {
   port: process.env.PORT,
   config: {
-    scenario: process.env.SPRINT_GUARDIAN_SCENARIO,
+    scenario: isProductionActive
+      ? undefined
+      : process.env.SPRINT_GUARDIAN_SCENARIO,
+    env: process.env.NODE_ENV,
   },
   jira: {
     baseUrl: process.env.JIRA_BASE_URL,
@@ -14,7 +19,9 @@ const env = {
     boardId: process.env.JIRA_BOARD_ID,
   },
   llmConfig: {
-    enableMockMode: process.env.ENABLE_MOCK_LLM === "true",
+    enableMockMode: isProductionActive
+      ? undefined
+      : process.env.ENABLE_MOCK_LLM === "true",
   },
   openAi: {
     token: process.env.OPENAI_API_KEY,
@@ -42,7 +49,8 @@ const env = {
   },
   mongo: {
     uri: process.env.MONGODB_URI,
-    dbName: process.env.MONGODB_DATABASE,
+    dbNameDev: process.env.MONGODB_DATABASE_DEV,
+    dbNameProd: process.env.MONGODB_DATABASE_PROD,
   },
 };
 

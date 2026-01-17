@@ -1,9 +1,12 @@
-import { RiskScore, TicketState } from "../../utils/agent.utils";
+import { SprintIssueT } from "../../integrations/types";
+import { getIssueStatus, RiskScore, TicketState } from "../../utils/agent.utils";
 
 const anaylzeCommitSignal = (
-  issueStatus: TicketState,
+  issue: SprintIssueT,
   hasCommits: boolean
 ): number => {
+  const issueStatus = getIssueStatus(issue);
+  
   if (issueStatus === TicketState.IN_PROGRESS && !hasCommits) {
     return RiskScore.LOW;
   }

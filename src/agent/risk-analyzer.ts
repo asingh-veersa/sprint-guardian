@@ -1,5 +1,10 @@
 import { DateTime } from "luxon";
-import { CommitT, SprintDetailT, SprintIssueT } from "../integrations/types";
+import {
+  CommitT,
+  SprintDetailT,
+  SprintIssueDetailsT,
+  SprintIssueT,
+} from "../integrations/types";
 import { RiskSignalsT, RiskT } from "./types";
 import {
   getIssueStatus,
@@ -15,6 +20,9 @@ import anaylzeSprintNearEndSignal from "./risks/sprint-near-end-issue";
 import anaylzeOwnershipSignal from "./risks/ownership-risk";
 import anaylzeMissingMRSignal from "./risks/missing-merge-request";
 import analyzeLateStartRisk from "./risks/late-start";
+import { getIssueDetails } from "../integrations/jira";
+import anaylzeOverDueSignal from "./risks/over-due";
+import analyzeBlockedDependenciesSignal from "./risks/blocked-dependencies";
 
 const shouldTrackIssue = (
   issue: SprintIssueT,
@@ -48,84 +56,81 @@ const analyzeSprintRisks = async (
     let score = 0;
     const status = getIssueStatus(issue) as TicketState;
     const issueKey = issue.key;
-    const lastUpdated =
-      issue.fields?.updated && DateTime.fromISO(issue.fields?.updated);
-    const storyPoints = Number(issue.fields.story_point_estimate ?? "0");
-    const daysStale = lastUpdated ? getStaleDays(lastUpdated) : 0;
-    const remainingSprintDays = sprintContext.endDate
-      ? getRemainingSprintDays(sprintContext.endDate)
-      : null;
+    const daysStale = getStaleDays(issue.fields?.updated);
+    const remainingSprintDays = getRemainingSprintDays(sprintContext.endDate);
 
     const commitInfo = commitsByIssueKey.get(issueKey);
     const daysSinceLastCommit = commitInfo
-      ? getStaleDays(commitInfo.lastCommitAt)
+      ? getStaleDays(commitInfo.lastCommitAt.toString())
       : Infinity;
 
-    // Skip the healthy states states
+    // Skip the healthy states
     if (status && shouldTrackIssue(issue, sprintContext)) {
-      // SIGNAL 1: In progress but no commits
-      score += anaylzeCommitSignal(
-        status as TicketState,
-        commitsByIssueKey.has(issueKey)
+      const issueDetails: SprintIssueDetailsT = await getIssueDetails(
+        issue.key
       );
+      // SIGNAL 1: In progress but no commits
+      score += anaylzeCommitSignal(issue, commitsByIssueKey.has(issueKey));
 
       // SIGNAL 2: Stale issue
-      score += anaylzeStaleSignal(status, daysSinceLastCommit);
+      score += anaylzeStaleSignal(issue, commitsByIssueKey.get(issueKey));
 
       /**
        * SIGNAL 3: Sprint near end or story points are more than remaining sprint days
        *  - Only stalled in-progress work near sprint end escalates
        *  - Active work stays quiet
        */
-      score += anaylzeSprintNearEndSignal(
-        status,
-        daysStale,
-        remainingSprintDays
-      );
+      score += anaylzeSprintNearEndSignal(issue, sprintContext);
 
       // SIGNAL 4: Ownership risk
       score += anaylzeOwnershipSignal(issue);
 
       // SIGNAL 5: Issue is in Code Review but missing attached Merge request links
-      riskSignals.missingMR = anaylzeMissingMRSignal(issue);
-      if (riskSignals.missingMR) {
-        score += RiskScore.LOW;
-      }
+      const [mrSignal, mrSignalScore] = anaylzeMissingMRSignal(issue);
+      riskSignals.missingMR = mrSignal;
+      score += mrSignalScore;
 
       // SIGNAL 6: Issue is picked late - story points > left sprint
-      score += analyzeLateStartRisk(status, storyPoints, remainingSprintDays);
-    }
+      score += analyzeLateStartRisk(issue, sprintContext);
 
-    if (score > RISK_THRESHOLD) {
-      risks.push({
-        issueKey,
-        summary: issue.fields.summary,
-        status: status ?? "",
-        riskScore: Math.min(score, 100),
-        signals: {
-          noCommits: !commitsByIssueKey.has(issueKey),
-          daysSinceLastCommit,
-          staleDays: daysStale,
-          sprintEnding: remainingSprintDays
-            ? remainingSprintDays <= SPRINT_END_THRESHOLD
-            : false,
-          missingMR: riskSignals.missingMR,
-          ownershipRisk: !issue.fields.assignee,
-        },
-      });
+      // SIGNAL 7: Issue took more than assigned story points
+      score += anaylzeOverDueSignal(issue, issueDetails);
+
+      // SIGNAL 8: Issues linked as blockers not resolved
+      score += analyzeBlockedDependenciesSignal(issueDetails);
+
+      if (score > RISK_THRESHOLD) {
+        risks.push({
+          issueKey,
+          summary: issue.fields.summary,
+          status: status ?? "",
+          riskScore: Math.min(score, 100),
+          signals: {
+            noCommits: !commitsByIssueKey.has(issueKey),
+            daysSinceLastCommit,
+            staleDays: daysStale,
+            sprintEnding: remainingSprintDays
+              ? remainingSprintDays <= SPRINT_END_THRESHOLD
+              : false,
+            missingMR: riskSignals.missingMR,
+            ownershipRisk: !issue.fields.assignee,
+          },
+          issue: issueDetails,
+        });
+      }
     }
   }
 
   return risks;
 };
 
-type CommitIssueInfo = {
+export type CommitInfoT = {
   commitCount: number;
   projectIds: Set<number>;
   lastCommitAt: DateTime;
 };
 
-type CommitIssueMap = Map<string, CommitIssueInfo>;
+type CommitIssueMap = Map<string, CommitInfoT>;
 
 // returns a mapping of commit id and projectId
 const mapCommitsToIssues = (commits: CommitT[]): CommitIssueMap => {

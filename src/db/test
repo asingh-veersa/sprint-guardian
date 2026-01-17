@@ -1,0 +1,281 @@
+db.riskmemories.insertMany([
+    {
+        issueKey: "API-301",
+        lastRiskScore: 72,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T09:30:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-08T10:00:00Z"),
+        updatedAt: ISODate("2026-01-12T09:30:00Z")
+    },
+    {
+        issueKey: "UI-402",
+        lastRiskScore: 38,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-12T09:30:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-09T11:15:00Z"),
+        updatedAt: ISODate("2026-01-12T09:30:00Z")
+    },
+    {
+        issueKey: "OPS-515",
+        lastRiskScore: 18,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-11T14:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-10T08:45:00Z"),
+        updatedAt: ISODate("2026-01-11T14:00:00Z")
+    },
+    {
+        issueKey: "AUTH-210",
+        lastRiskScore: 0,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-10T17:20:00Z"),
+        active: false,
+        createdAt: ISODate("2026-01-06T09:00:00Z"),
+        updatedAt: ISODate("2026-01-10T17:20:00Z")
+    },
+    {
+        issueKey: "PAY-118",
+        lastRiskScore: 85,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T10:10:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-11T10:00:00Z"),
+        updatedAt: ISODate("2026-01-12T10:10:00Z")
+    },
+    {
+        issueKey: "NOTIF-77",
+        lastRiskScore: 55,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-11T18:40:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-09T13:30:00Z"),
+        updatedAt: ISODate("2026-01-11T18:40:00Z")
+    },
+    {
+        issueKey: "DB-234",
+        lastRiskScore: 95,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T11:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-07T14:20:00Z"),
+        updatedAt: ISODate("2026-01-12T11:00:00Z")
+    },
+    {
+        issueKey: "SEC-456",
+        lastRiskScore: 88,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T08:15:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-05T09:00:00Z"),
+        updatedAt: ISODate("2026-01-12T08:15:00Z")
+    },
+    {
+        issueKey: "PERF-123",
+        lastRiskScore: 65,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-11T16:30:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-08T12:00:00Z"),
+        updatedAt: ISODate("2026-01-11T16:30:00Z")
+    },
+    {
+        issueKey: "TEST-789",
+        lastRiskScore: 45,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-10T10:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-09T08:00:00Z"),
+        updatedAt: ISODate("2026-01-10T10:00:00Z")
+    },
+    {
+        issueKey: "DOC-321",
+        lastRiskScore: 35,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-09T15:45:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-08T10:30:00Z"),
+        updatedAt: ISODate("2026-01-09T15:45:00Z")
+    },
+    {
+        issueKey: "INFRA-567",
+        lastRiskScore: 28,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-08T12:20:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-07T11:00:00Z"),
+        updatedAt: ISODate("2026-01-08T12:20:00Z")
+    },
+    {
+        issueKey: "MOBILE-890",
+        lastRiskScore: 12,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-07T14:10:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-06T09:15:00Z"),
+        updatedAt: ISODate("2026-01-07T14:10:00Z")
+    },
+    {
+        issueKey: "FEAT-111",
+        lastRiskScore: 5,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-06T16:00:00Z"),
+        active: false,
+        createdAt: ISODate("2026-01-05T08:00:00Z"),
+        updatedAt: ISODate("2026-01-06T16:00:00Z")
+    },
+    {
+        issueKey: "BUG-222",
+        lastRiskScore: 78,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T07:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-10T13:00:00Z"),
+        updatedAt: ISODate("2026-01-12T07:00:00Z")
+    },
+    {
+        issueKey: "REFACTOR-333",
+        lastRiskScore: 42,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-11T09:30:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-09T15:00:00Z"),
+        updatedAt: ISODate("2026-01-11T09:30:00Z")
+    },
+    {
+        issueKey: "DEPLOY-444",
+        lastRiskScore: 50,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T06:45:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-11T07:00:00Z"),
+        updatedAt: ISODate("2026-01-12T06:45:00Z")
+    },
+    {
+        issueKey: "MONITOR-555",
+        lastRiskScore: 30,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-10T11:20:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-08T14:00:00Z"),
+        updatedAt: ISODate("2026-01-10T11:20:00Z")
+    },
+    {
+        issueKey: "LEGACY-666",
+        lastRiskScore: 92,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-11T20:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-04T10:00:00Z"),
+        updatedAt: ISODate("2026-01-11T20:00:00Z")
+    },
+    {
+        issueKey: "MICRO-777",
+        lastRiskScore: 25,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-09T13:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-08T09:00:00Z"),
+        updatedAt: ISODate("2026-01-09T13:00:00Z")
+    },
+    {
+        issueKey: "INTEGRATION-888",
+        lastRiskScore: 60,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T05:30:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-10T11:00:00Z"),
+        updatedAt: ISODate("2026-01-12T05:30:00Z")
+    },
+    {
+        issueKey: "CACHE-999",
+        lastRiskScore: 15,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-08T10:00:00Z"),
+        active: false,
+        createdAt: ISODate("2026-01-07T08:00:00Z"),
+        updatedAt: ISODate("2026-01-08T10:00:00Z")
+    },
+    {
+        issueKey: "QUEUE-101",
+        lastRiskScore: 70,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-11T22:15:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-09T16:00:00Z"),
+        updatedAt: ISODate("2026-01-11T22:15:00Z")
+    },
+    {
+        issueKey: "STREAM-202",
+        lastRiskScore: 40,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-10T14:30:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-09T10:00:00Z"),
+        updatedAt: ISODate("2026-01-10T14:30:00Z")
+    },
+    {
+        issueKey: "BATCH-303",
+        lastRiskScore: 3,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-05T12:00:00Z"),
+        active: false,
+        createdAt: ISODate("2026-01-04T08:00:00Z"),
+        updatedAt: ISODate("2026-01-05T12:00:00Z")
+    },
+    {
+        issueKey: "GRAPHQL-404",
+        lastRiskScore: 58,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T12:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-11T09:00:00Z"),
+        updatedAt: ISODate("2026-01-12T12:00:00Z")
+    },
+    {
+        issueKey: "REST-505",
+        lastRiskScore: 22,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-09T08:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-08T07:00:00Z"),
+        updatedAt: ISODate("2026-01-09T08:00:00Z")
+    },
+    {
+        issueKey: "WEBSOCKET-606",
+        lastRiskScore: 80,
+        lastSeverity: "HIGH",
+        lastAltertedAt: ISODate("2026-01-12T13:30:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-10T15:00:00Z"),
+        updatedAt: ISODate("2026-01-12T13:30:00Z")
+    },
+    {
+        issueKey: "CRON-707",
+        lastRiskScore: 33,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-10T09:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-09T11:00:00Z"),
+        updatedAt: ISODate("2026-01-10T09:00:00Z")
+    },
+    {
+        issueKey: "WORKER-808",
+        lastRiskScore: 48,
+        lastSeverity: "MEDIUM",
+        lastAltertedAt: ISODate("2026-01-11T12:00:00Z"),
+        active: true,
+        createdAt: ISODate("2026-01-10T08:00:00Z"),
+        updatedAt: ISODate("2026-01-11T12:00:00Z")
+    },
+    {
+        issueKey: "SCHEDULER-909",
+        lastRiskScore: 8,
+        lastSeverity: "LOW",
+        lastAltertedAt: ISODate("2026-01-07T11:00:00Z"),
+        active: false,
+        createdAt: ISODate("2026-01-06T10:00:00Z"),
+        updatedAt: ISODate("2026-01-07T11:00:00Z")
+    }
+]);

@@ -1,3 +1,5 @@
+import { SprintIssueDetailsT } from "../../integrations/types";
+
 export type RiskT = {
   type?: string;
   message?: string;
@@ -6,6 +8,7 @@ export type RiskT = {
   status: string;
   riskScore: number;
   signals: RiskSignalsT;
+  issue: SprintIssueDetailsT;
 };
 
 export type RiskSignalsT = {
@@ -17,9 +20,31 @@ export type RiskSignalsT = {
   ownershipRisk?: boolean;
 };
 
-export type LlmInsightT = {
+export enum Decision {
+  CONFIRMED = "CONFIRMED",
+  IGNORE = "IGNORE",
+  MONITOR = "MONITOR",
+}
+
+export enum Severity {
+  HIGH = "HIGH",
+  MEDIUM = "MEDIUM",
+  LOW = "LOW",
+  NONE = "NONE",
+}
+
+export enum Urgency {
+  IMMEDIATE = "IMMEDIATE",
+  TODAY = "TODAY",
+  LATER = "LATER",
+  NONE = "NONE",
+}
+
+export type llmAnalyzedRiskT = {
   issueKey: string;
-  severity: "HIGH" | "MEDIUM" | "LOW";
+  decision: Decision;
+  severity: Severity;
+  urgency: Urgency;
   reason: string;
   suggestedAction: string;
 };

@@ -6,6 +6,8 @@ import {
   buildJiraFieldMap,
   transformObjectKey,
 } from "../utils/integrations.util";
+import fs from "fs/promises";
+import scenarios from "../mock/scenarios";
 
 const jira = axios.create({
   baseURL: env.jira.baseUrl,
@@ -82,8 +84,7 @@ async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
 
   const res = await jira.get(`/rest/agile/1.0/sprint/${sprintId}/issue`, {
     params: {
-      fields:
-        sprintObjectResponseFields.join(",") + "," + customFields.join(","),
+      fields: paramFields,
     },
   });
 
@@ -148,6 +149,52 @@ export async function getActiveSprintIssues(
 
   const issues = await getSprintIssues(sprint.id);
   return issues;
+}
+
+/**
+ * Get a particular issue details
+ */
+export async function getIssueDetails(issueIdOrKey: string) {
+  const scenarioName = env.config.scenario;
+  const scenario = scenarioName ? scenarios[scenarioName] : null;
+
+  if(scenario){
+    // NOTE: always filter issue by key and not id in case of running scenario for sake of simplicity.
+    return scenario.issueDetails?.find(issue => issue.key === issueIdOrKey)
+  }
+
+  // REAL TIME DATA
+  const res = await jira.get(`/rest/agile/1.0/issue/${issueIdOrKey}`, {
+    params: {
+      // fields:
+      //   sprintObjectResponseFields.join(",") + "," + customFields.join(","),
+    },
+  });
+
+  const fieldMap: Map<string, string> = buildJiraFieldMap(
+    await getJiraFields()
+  );
+
+  // mapping custom field ids with their names
+  const mappedFields = res.data.fields;
+  for (const [key, value] of Object.entries(mappedFields)) {
+    const numericKey = key;
+    if (
+      // customFields.includes(numericKey) &&
+      fieldMap.has(numericKey)
+    ) {
+      mappedFields[transformObjectKey(fieldMap.get(numericKey)!)] = value;
+    } else {
+      mappedFields[key] = value;
+    }
+  }
+
+  res.data = {
+    ...res.data,
+    fields: mappedFields,
+  };
+
+  return res.data;
 }
 
 /**

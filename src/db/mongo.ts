@@ -11,7 +11,10 @@ export const connectMongo = async (): Promise<typeof mongoose> => {
   }
 
   connectionPromise = mongoose.connect(env.mongo.uri!, {
-    dbName: env.mongo.dbName,
+    dbName:
+      env.config.env === "production"
+        ? env.mongo.dbNameProd
+        : env.mongo.dbNameDev,
   });
 
   connectionPromise.catch((err) => {

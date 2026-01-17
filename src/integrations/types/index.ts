@@ -39,6 +39,10 @@ export type SprintIssueT = {
   fields: SprintIssueFieldsT;
 };
 
+export type SprintIssueDetailsT = Omit<SprintIssueT, "fields"> & {
+  fields: Record<string, any>;
+};
+
 /**
  * Sub types used for Sprint Issue
  */

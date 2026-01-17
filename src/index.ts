@@ -1,5 +1,7 @@
 import { runSprintGuardian } from "./agent/sprint-guardian";
-import { getJiraFields } from "./integrations/jira";
+import env from "./config/env";
+import { getIssueDetails, getJiraFields } from "./integrations/jira";
 
 runSprintGuardian();
 // getJiraFields()
+// getIssueDetails('FUEL-278')

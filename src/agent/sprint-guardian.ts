@@ -3,7 +3,7 @@ import { getRecentCommits } from "../integrations/gitlab";
 import { getActiveSprint, getActiveSprintIssues } from "../integrations/jira";
 import analyzeSprintRisks from "./risk-analyzer";
 import { sendSlackMessage } from "../integrations/slack";
-import { performLlmReasoning } from "./llm-reasoner";
+import { performGenAiAnalysis } from "./gen-ai";
 import { formatSlackMessage } from "../utils/integrations.util";
 import {
   createStep,
@@ -15,6 +15,7 @@ import scenarios from "../mock/scenarios";
 import { connectMongo } from "../db/mongo";
 import { cleanupResolvedIssues } from "./memory/memory-cleanup";
 import { applyAgentMemory } from "./memory/agent-memory";
+import decisionEngine from "./decision-engine";
 
 export const runSprintGuardian = async () => {
   const scenarioName = env.config.scenario;
@@ -71,8 +72,6 @@ export const runSprintGuardian = async () => {
 
   const risks = await analyzeSprintRisks(issues, commits, sprintContext);
 
-  // console.log("risks: ", risks);
-
   analyzeStep.warn(`Detected ${risks.length} potential risks`);
 
   /**
@@ -93,19 +92,35 @@ export const runSprintGuardian = async () => {
   const reasonStep = createStep("Consulting Sprint Guardian AI...");
   reasonStep.start();
 
-  const insights = await performLlmReasoning(memoryAwareRisks, sprintContext);
+  const insights = await performGenAiAnalysis(memoryAwareRisks, sprintContext);
   if (!insights || insights.length === 0) {
     reasonStep.warn("LLM returned no actionable insights");
+    logSuccess("Sprint Guardian cycle completed");
     return;
   }
+
+
   reasonStep.succeed("AI reasoning completed");
+
+  /**
+   * Decision Engine
+   */
+  const decisionStep = createStep("Running Decision Engine...");
+  decisionStep.start();
+  const confirmedInsights = decisionEngine(insights);
+  if (confirmedInsights.length === 0) {
+    decisionStep.warn("Decision Engine returned no actionable insights");
+    logSuccess("Sprint Guardian cycle completed");
+    return;
+  }
+  decisionStep.succeed("Insights verified by Decision Engine");
 
   /**
    * ACT
    */
   const actStep = createStep("Notifying team via Slack...");
   actStep.start();
-  await sendSlackMessage(formatSlackMessage(insights));
+  await sendSlackMessage(formatSlackMessage(confirmedInsights));
   actStep.succeed("Slack notification sent 🚀");
 
   logSuccess("Sprint Guardian cycle completed");

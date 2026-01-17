@@ -1,6 +1,6 @@
-import { LlmInsightT } from "../../agent/types";
+import { llmAnalyzedRiskT } from "../../agent/types";
 
-export function formatSlackMessage(insights: LlmInsightT[]): string {
+export function formatSlackMessage(insights: llmAnalyzedRiskT[]): string {
   let text = `🚨 *Sprint Guardian Alert*\n`;
   text += `_Autonomous sprint risk analysis_\n\n`;
 
