@@ -47,4 +47,5 @@ export type llmAnalyzedRiskT = {
   urgency: Urgency;
   reason: string;
   suggestedAction: string;
+  confidence: string;
 };

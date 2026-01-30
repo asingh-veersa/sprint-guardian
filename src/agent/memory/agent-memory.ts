@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { RiskT } from "../types";
+import { llmAnalyzedRiskT, RiskT } from "../types";
 import { RiskMemory } from "../../db/schema/risk-memory.schema";
 
 const getSeverityFromScore = (score: number) => {
@@ -17,6 +17,7 @@ export type MemoryAwareRiskT = RiskT & {
   alertType: AlterTypeT;
 };
 
+// will provide memory to help determine if the risks are new or are already reported
 export const applyAgentMemory = async (
   risks: RiskT[]
 ): Promise<MemoryAwareRiskT[]> => {
@@ -75,4 +76,25 @@ export const applyAgentMemory = async (
   }
 
   return actionable;
+};
+
+// Updates the issues based on GenAi response (if any)
+export const updateAgentMemory = async (
+  risks: llmAnalyzedRiskT[]
+): Promise<void> => {
+  for (const risk of risks) {
+    await RiskMemory.findOneAndUpdate(
+      {
+        issueKey: risk.issueKey,
+      },
+      {
+        $set: {
+          confidence: risk.confidence,
+        },
+      },
+      {
+        $upsert: false,
+      }
+    );
+  }
 };

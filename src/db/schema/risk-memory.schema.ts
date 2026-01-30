@@ -11,6 +11,8 @@ const RiskMemorySchema = new Schema(
     },
     lastAltertedAt: { type: Date, required: true, default: Date.now() },
     active: { type: Boolean, default: true },
+    // experimental
+    confidence: { type: String, required: false },
   },
   {
     timestamps: true,

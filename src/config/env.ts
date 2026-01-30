@@ -11,6 +11,7 @@ const env = {
       ? undefined
       : process.env.SPRINT_GUARDIAN_SCENARIO,
     env: process.env.NODE_ENV,
+    debugMode: process.env.DEBUG === "true",
   },
   jira: {
     baseUrl: process.env.JIRA_BASE_URL,
