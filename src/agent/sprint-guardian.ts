@@ -7,8 +7,6 @@ import { performGenAiAnalysis } from "./gen-ai";
 import { formatSlackMessage } from "../utils/integrations.util";
 import {
   createStep,
-  logSection,
-  logSuccess,
   logWarning,
   pause,
   PauseDuration,
@@ -19,11 +17,17 @@ import { connectMongo } from "../db/mongo";
 import { cleanupResolvedIssues } from "./memory/memory-cleanup";
 import { applyAgentMemory, updateAgentMemory } from "./memory/agent-memory";
 import decisionEngine from "./decision-engine";
-import chalk from "chalk";
+import { SprintIssueT } from "../integrations/types";
+import { llmAnalyzedRiskT, RiskT } from "./types";
 
-export const runSprintGuardian = async () => {
-  const activeDebugMode = env.config.debugMode;
-
+export const runSprintGuardian = async (): Promise<
+  [
+    issues: SprintIssueT[],
+    risks: RiskT[],
+    positives: llmAnalyzedRiskT[],
+    confirmedInsights: llmAnalyzedRiskT[]
+  ]
+> => {
   const scenarioName = env.config.scenario;
   const scenario = scenarioName ? scenarios[scenarioName] : null;
 
@@ -38,7 +42,7 @@ export const runSprintGuardian = async () => {
 
   if (!boardId) {
     logWarning("Jira board ID not configured");
-    process.exit();
+    throw Error("Jira board ID not configured");
   }
 
   /**
@@ -63,7 +67,7 @@ export const runSprintGuardian = async () => {
     : await getActiveSprint(boardId);
   if (!sprintContext) {
     logWarning("No active sprint found");
-    process.exit();
+    return [[], [], [], []];
   }
 
   await pause(PauseDuration.LONG);
@@ -93,8 +97,7 @@ export const runSprintGuardian = async () => {
   const memoryAwareRisks = await applyAgentMemory(risks);
   if (memoryAwareRisks.length === 0) {
     analyzeStep.succeed("No new or escalated risks detected 🎉");
-    logSuccess("Sprint Guardian cycle completed");
-    process.exit();
+    return [issues, risks, [], []];
   }
 
   /**
@@ -106,8 +109,7 @@ export const runSprintGuardian = async () => {
   if (!insights || insights.length === 0) {
     reasonStep.warn("LLM returned no actionable insights");
     reasonStep.succeed();
-    logSuccess("Sprint Guardian cycle completed");
-    process.exit();
+    return [issues, risks, [], []];
   }
   reasonStep.succeed("AI reasoning completed");
 
@@ -123,8 +125,7 @@ export const runSprintGuardian = async () => {
   if (confirmedInsights.length === 0) {
     decisionStep.warn("Decision Engine returned no actionable insights");
     decisionStep.succeed();
-    logSuccess("Sprint Guardian cycle completed");
-    process.exit();
+    return [issues, risks, insights, []];
   }
   decisionStep.succeed("Insights verified by Decision Engine");
 
@@ -138,18 +139,5 @@ export const runSprintGuardian = async () => {
     actStep.succeed("Slack notification sent 🚀");
   }
 
-  logSuccess("Sprint Guardian cycle completed");
-
-  console.log(
-    chalk.bold.green(`\n
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✔ Sprint Analysis Complete
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Issues Analyzed : ${issues.length}
-Risks       : ${risks.length}
-Decision made  : ${confirmedInsights.length}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-`)
-  );
-  process.exit();
+  return [issues, risks, insights, confirmedInsights];
 };

@@ -2,10 +2,9 @@ import chalk from "chalk";
 import figlet from "figlet";
 import { mind } from "gradient-string";
 import { runSprintGuardian } from "./agent/sprint-guardian";
-import env from "./config/env";
-import { getIssueDetails, getJiraFields } from "./integrations/jira";
-import { pause } from "./utils/terminal-ui.utils";
+import { logSuccess, pause } from "./utils/terminal-ui.utils";
 import ora from "ora";
+import { sendSlackMessage } from "./integrations/slack";
 
 console.log(mind(figlet.textSync("PROJECT SENTINEL", { font: "Big" })));
 console.log(chalk.dim("AI-powered Sprint Risk Analysis\n"));
@@ -15,7 +14,31 @@ await pause(2000 as any);
 spinner.succeed("System ready!");
 await pause(1000);
 
-await runSprintGuardian();
+const [issues, risks, positives, confirmedInsights] = await runSprintGuardian();
+
+// in case 0 risks found
+if (confirmedInsights.length === 0) {
+  await sendSlackMessage(
+    `Sprint Guardian scanned all issues — no risks found today.\nGreat job keeping everything moving smoothly! 🚀`
+  );
+}
+
+logSuccess("Sprint Guardian cycle completed");
+
+console.log(
+  chalk.bold.green(`\n
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✔ Sprint Analysis Complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Issues Analyzed : ${issues.length}
+Risks       : ${risks.length}
+True positives : ${positives.length}
+Decision made  : ${confirmedInsights.length}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`)
+);
+
+process.exit();
 
 // getJiraFields()
 // getIssueDetails('FUEL-278')
