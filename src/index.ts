@@ -18,9 +18,14 @@ const [issues, risks, positives, confirmedInsights] = await runSprintGuardian();
 
 // in case 0 risks found
 if (confirmedInsights.length === 0) {
-  await sendSlackMessage(
-    `Sprint Guardian scanned all issues — no risks found today.\nGreat job keeping everything moving smoothly! 🚀`
-  );
+  try {
+    await sendSlackMessage(
+      `Sprint Guardian scanned all issues — no risks found today.\nGreat job keeping everything moving smoothly! 🚀`
+    );
+    console.log("Slack message sent!");
+  } catch (err: any) {
+    console.error("Slack error: ", err.data || err);
+  }
 }
 
 logSuccess("Sprint Guardian cycle completed");
