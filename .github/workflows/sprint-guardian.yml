@@ -20,6 +20,10 @@ jobs:
       - name: Show current commit
         run: git rev-parse HEAD
 
+      - name: Debug environment
+        run: |
+          echo "Slack Channel: $SLACK_CHANNEL"
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
