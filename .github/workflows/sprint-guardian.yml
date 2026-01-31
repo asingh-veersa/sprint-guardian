@@ -21,8 +21,11 @@ jobs:
         run: git rev-parse HEAD
 
       - name: Debug environment
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
         run: |
-          echo "Slack Channel: $SLACK_CHANNEL"
+          echo "Slack Channel: $SLACK_CHANNEL - $SLACK_BOT_TOKEN"
 
       - name: Setup Node
         uses: actions/setup-node@v4
