@@ -1,6 +1,10 @@
 # Sprint Guardian 🛡️
 
+
 [![Sprint Guardian Daily Run](https://github.com/asingh-veersa/sprint-guardian/actions/workflows/sprint-guardian.yml/badge.svg)](https://github.com/asingh-veersa/sprint-guardian/actions/workflows/sprint-guardian.yml)
+
+![Sprint Guardian](readme/image.png)
+
 
 **AI-powered Sprint Risk Analysis System**
 
