@@ -20,7 +20,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ days: 2 }).toISO()!,
-        assignee: { accountId: "alice", emailAddress: "alice@example.com", displayName: "Alice" },
+        assignee: { displayName: "Alice" },
       },
     }),
 
@@ -30,7 +30,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 20 }).toISO()!,
-        assignee: { accountId: "bob", emailAddress: "bob@example.com", displayName: "Bob" },
+        assignee: { displayName: "Bob" },
       },
     }),
 
@@ -40,7 +40,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "To Do" },
         updated: DateTime.now().minus({ hours: 6 }).toISO()!,
-        assignee: { accountId: "charlie", emailAddress: "charlie@example.com", displayName: "Charlie" },
+        assignee: { displayName: "Charlie" },
       },
     }),
 
@@ -51,7 +51,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "Done" },
         updated: DateTime.now().minus({ hours: 10 }).toISO()!,
         resolutiondate: DateTime.now().minus({ hours: 10 }).toISO()!,
-        assignee: { accountId: "dana", emailAddress: "dana@example.com", displayName: "Dana" },
+        assignee: { displayName: "Dana" },
       },
     }),
 
@@ -61,7 +61,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 12 }).toISO()!,
-        assignee: { accountId: "eve", emailAddress: "eve@example.com", displayName: "Eve" },
+        assignee: { displayName: "Eve" },
         story_point_estimate: "5",
       },
     }),
@@ -72,7 +72,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ days: 1 }).toISO()!,
-        assignee: { accountId: "frank", emailAddress: "frank@example.com", displayName: "Frank" },
+        assignee: { displayName: "Frank" },
         story_point_estimate: "3",
       },
     }),
@@ -83,7 +83,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 6 }).toISO()!,
-        assignee: { accountId: "grace", emailAddress: "grace@example.com", displayName: "Grace" },
+        assignee: { displayName: "Grace" },
         story_point_estimate: "2", // Exactly 2 days left in sprint
       },
     }),
@@ -94,7 +94,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 4 }).toISO()!,
-        assignee: { accountId: "henry", emailAddress: "henry@example.com", displayName: "Henry" },
+        assignee: { displayName: "Henry" },
         story_point_estimate: "3",
       },
     }),
@@ -105,7 +105,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "Code Review" },
         updated: DateTime.now().minus({ hours: 2 }).toISO()!,
-        assignee: { accountId: "iris", emailAddress: "iris@example.com", displayName: "Iris" },
+        assignee: { displayName: "Iris" },
         development: "branch=feature/graphql", // Has branch but no pullrequest=
         story_point_estimate: "2",
       },
@@ -117,7 +117,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 1 }).toISO()!,
-        assignee: { accountId: "jack", emailAddress: "jack@example.com", displayName: "Jack" }, // Just assigned
+        assignee: { displayName: "Jack" }, // Just assigned
         story_point_estimate: "1",
       },
     }),
@@ -128,7 +128,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 3 }).toISO()!,
-        assignee: { accountId: "kate", emailAddress: "kate@example.com", displayName: "Kate" },
+        assignee: { displayName: "Kate" },
         story_point_estimate: "4",
       },
     }),
@@ -139,7 +139,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ days: 1, hours: 12 }).toISO()!,
-        assignee: { accountId: "leo", emailAddress: "leo@example.com", displayName: "Leo" },
+        assignee: { displayName: "Leo" },
         story_point_estimate: "3",
       },
     }),
@@ -150,7 +150,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "Code Review" },
         updated: DateTime.now().minus({ hours: 1 }).toISO()!,
-        assignee: { accountId: "mia", emailAddress: "mia@example.com", displayName: "Mia" },
+        assignee: { displayName: "Mia" },
         development: "pullrequest=123", // Has MR, should be fine
         story_point_estimate: "2",
       },
@@ -162,7 +162,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 8 }).toISO()!,
-        assignee: { accountId: "noah", emailAddress: "noah@example.com", displayName: "Noah" },
+        assignee: { displayName: "Noah" },
         story_point_estimate: "5", // High story points, sprint ending
       },
     }),
@@ -173,7 +173,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "On Hold" },
         updated: DateTime.now().minus({ hours: 2 }).toISO()!,
-        assignee: { accountId: "olivia", emailAddress: "olivia@example.com", displayName: "Olivia" },
+        assignee: { displayName: "Olivia" },
         story_point_estimate: "2",
       },
     }),
@@ -184,7 +184,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 6 }).toISO()!,
-        assignee: { accountId: "paul", emailAddress: "paul@example.com", displayName: "Paul" },
+        assignee: { displayName: "Paul" },
         story_point_estimate: "1", // Less than remaining days, should be fine
       },
     }),
@@ -195,7 +195,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 2 }).toISO()!,
-        assignee: { accountId: "quinn", emailAddress: "quinn@example.com", displayName: "Quinn" },
+        assignee: { displayName: "Quinn" },
         story_point_estimate: "3",
       },
     }),
@@ -206,7 +206,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "Code Review" },
         updated: DateTime.now().minus({ hours: 3 }).toISO()!,
-        assignee: { accountId: "rachel", emailAddress: "rachel@example.com", displayName: "Rachel" },
+        assignee: { displayName: "Rachel" },
         development: "repository=backend", // Missing pullrequest= but has other data
         story_point_estimate: "3",
       },
@@ -229,7 +229,7 @@ export const borderlineSprint: SprintScenarioT = {
       fields: {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ days: 1 }).toISO()!,
-        assignee: { accountId: "sam", emailAddress: "sam@example.com", displayName: "Sam" },
+        assignee: { displayName: "Sam" },
         story_point_estimate: "1",
       },
     }),
@@ -426,7 +426,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 12 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 4 }).toISO()!,
-        assignee: { accountId: "eve", emailAddress: "eve@example.com", displayName: "Eve" },
+        assignee: { displayName: "Eve" },
         comment: {
           comments: [
             {
@@ -448,7 +448,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ days: 1 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 3 }).toISO()!,
-        assignee: { accountId: "frank", emailAddress: "frank@example.com", displayName: "Frank" },
+        assignee: { displayName: "Frank" },
         comment: {
           comments: [
             {
@@ -470,7 +470,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 6 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 1 }).toISO()!,
-        assignee: { accountId: "grace", emailAddress: "grace@example.com", displayName: "Grace" },
+        assignee: { displayName: "Grace" },
         comment: {
           comments: [
             {
@@ -492,7 +492,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 4 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 3 }).toISO()!,
-        assignee: { accountId: "henry", emailAddress: "henry@example.com", displayName: "Henry" },
+        assignee: { displayName: "Henry" },
         comment: {
           comments: [
             {
@@ -514,7 +514,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "Code Review" },
         updated: DateTime.now().minus({ hours: 2 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ hours: 2 }).toISO()!,
-        assignee: { accountId: "iris", emailAddress: "iris@example.com", displayName: "Iris" },
+        assignee: { displayName: "Iris" },
         comment: {
           comments: [
             {
@@ -536,7 +536,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 1 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ hours: 1 }).toISO()!,
-        assignee: { accountId: "jack", emailAddress: "jack@example.com", displayName: "Jack" },
+        assignee: { displayName: "Jack" },
         comment: {
           comments: [
             {
@@ -558,7 +558,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 3 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 2 }).toISO()!,
-        assignee: { accountId: "kate", emailAddress: "kate@example.com", displayName: "Kate" },
+        assignee: { displayName: "Kate" },
         comment: {
           comments: [
             {
@@ -589,7 +589,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ days: 1, hours: 12 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 2 }).toISO()!,
-        assignee: { accountId: "leo", emailAddress: "leo@example.com", displayName: "Leo" },
+        assignee: { displayName: "Leo" },
         comment: {
           comments: [
             {
@@ -611,7 +611,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "Code Review" },
         updated: DateTime.now().minus({ hours: 1 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ hours: 1 }).toISO()!,
-        assignee: { accountId: "mia", emailAddress: "mia@example.com", displayName: "Mia" },
+        assignee: { displayName: "Mia" },
         comment: {
           comments: [
             {
@@ -633,7 +633,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 8 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 3 }).toISO()!,
-        assignee: { accountId: "noah", emailAddress: "noah@example.com", displayName: "Noah" },
+        assignee: { displayName: "Noah" },
         comment: {
           comments: [
             {
@@ -655,7 +655,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "On Hold" },
         updated: DateTime.now().minus({ hours: 2 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 1 }).toISO()!,
-        assignee: { accountId: "olivia", emailAddress: "olivia@example.com", displayName: "Olivia" },
+        assignee: { displayName: "Olivia" },
         comment: {
           comments: [
             {
@@ -677,7 +677,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 6 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 1 }).toISO()!,
-        assignee: { accountId: "paul", emailAddress: "paul@example.com", displayName: "Paul" },
+        assignee: { displayName: "Paul" },
         comment: {
           comments: [
             {
@@ -699,7 +699,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 2 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 2 }).toISO()!,
-        assignee: { accountId: "quinn", emailAddress: "quinn@example.com", displayName: "Quinn" },
+        assignee: { displayName: "Quinn" },
         comment: {
           comments: [
             {
@@ -721,7 +721,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "Code Review" },
         updated: DateTime.now().minus({ hours: 3 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ hours: 3 }).toISO()!,
-        assignee: { accountId: "rachel", emailAddress: "rachel@example.com", displayName: "Rachel" },
+        assignee: { displayName: "Rachel" },
         comment: {
           comments: [
             {
@@ -743,7 +743,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ hours: 1 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ hours: 1 }).toISO()!,
-        // No assignee field - testing ownership risk
+        assignee: undefined, // No assignee
         comment: {
           comments: [
             {
@@ -765,7 +765,7 @@ export const borderlineSprint: SprintScenarioT = {
         status: { name: "In Progress" },
         updated: DateTime.now().minus({ days: 1 }).toISO()!,
         statuscategorychangedate: DateTime.now().minus({ days: 2 }).toISO()!,
-        assignee: { accountId: "sam", emailAddress: "sam@example.com", displayName: "Sam" },
+        assignee: { displayName: "Sam" },
         comment: {
           comments: [
             {

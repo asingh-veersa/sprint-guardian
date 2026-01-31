@@ -11,8 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Checkout latest code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Ensure we get all history (latest code including tags/branches)
+
+      - name: Show current commit
+        run: git rev-parse HEAD
 
       - name: Setup Node
         uses: actions/setup-node@v4
