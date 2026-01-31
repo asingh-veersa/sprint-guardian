@@ -1,0 +1,47 @@
+name: Sprint Guardian Daily Run
+
+on:
+  schedule:
+    # Runs every day at 9:00 AM UTC
+    - cron: "0 9 * * *"
+  workflow_dispatch: {} # Allow manual trigger
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Sprint Guardian Agent
+        env:
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_BOARD_ID: ${{ secrets.JIRA_BOARD_ID }}
+
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_BASE_URL: ${{ secrets.GITLAB_BASE_URL }}
+          GITLAB_PROJECT_IDS: ${{ secrets.GITLAB_PROJECT_IDS }}
+
+          CUSTOM_ISSUE_FIELDS: ${{ secrets.CUSTOM_ISSUE_FIELDS }}
+
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DATABASE_PROD: ${{ secrets.MONGODB_DATABASE_PROD }}
+
+        run: npm run start
