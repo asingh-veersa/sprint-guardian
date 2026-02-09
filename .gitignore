@@ -2,3 +2,4 @@
 .env
 jira-token.txt
 open-api-key.txt
+/log
