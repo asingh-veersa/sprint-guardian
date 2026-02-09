@@ -1,32 +1,21 @@
 import path from "path";
-import { MemoryAwareRiskT } from "../agent/memory/agent-memory";
-import { RiskT } from "../agent/types";
+import { llmAnalyzedRiskT } from "../agent/types";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 
-const logRisks = (
-  risks: RiskT[],
-  memoryAwareRisks: MemoryAwareRiskT[]
-): void => {
+const logInsights = (risks: llmAnalyzedRiskT[]): void => {
   // Ensure logs directory exists
-  const logsDir = path.resolve(process.cwd(), "log/risks");
+  const logsDir = path.resolve(process.cwd(), "log/insights");
   if (!existsSync(logsDir)) {
     mkdirSync(logsDir, { recursive: true });
   }
 
   // Generate filename with current timestamp
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const logFileName = `risks-log-${timestamp}.json`;
+  const logFileName = `insights-log-${timestamp}.json`;
   const logFilePath = path.join(logsDir, logFileName);
 
-  // Prepare log data
-  risks = risks.map((r) => ({
-    ...r,
-    issue: undefined,
-  }));
-  
   const logData = {
     risks,
-    memoryAwareRisks,
     loggedAt: new Date().toISOString(),
   };
 
@@ -36,4 +25,4 @@ const logRisks = (
   });
 };
 
-export default logRisks;
+export default logInsights;

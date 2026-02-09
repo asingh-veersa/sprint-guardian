@@ -20,6 +20,7 @@ import decisionEngine from "./decision-engine";
 import { SprintIssueT } from "../integrations/types";
 import { llmAnalyzedRiskT, RiskT } from "./types";
 import logRisks from "../logger/risks-logger";
+import logInsights from "../logger/insights-logger";
 
 export const runSprintGuardian = async (): Promise<
   [
@@ -114,6 +115,11 @@ export const runSprintGuardian = async (): Promise<
   const reasonStep = createStep("Consulting Sprint Guardian AI...");
   reasonStep.start();
   const insights = await performGenAiAnalysis(memoryAwareRisks, sprintContext);
+  /**
+   * Logging (for dev purposes)
+   */
+  if (!isProdMode) logInsights(insights);
+
   if (!insights || insights.length === 0) {
     reasonStep.warn("LLM returned no actionable insights");
     reasonStep.succeed();

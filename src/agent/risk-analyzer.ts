@@ -10,7 +10,6 @@ import {
   getIssueStatus,
   getRemainingSprintDays,
   getStaleDays,
-  RiskScore,
   TicketState,
 } from "../utils/agent.utils";
 import anaylzeCommitSignal from "./risks/without-commits";
@@ -23,6 +22,7 @@ import analyzeLateStartRisk from "./risks/late-start";
 import { getIssueDetails } from "../integrations/jira";
 import anaylzeOverDueSignal from "./risks/over-due";
 import analyzeBlockedDependenciesSignal from "./risks/blocked-dependencies";
+import env from "../config/env";
 
 const shouldTrackIssue = (
   issue: SprintIssueT,
@@ -69,35 +69,61 @@ const analyzeSprintRisks = async (
       const issueDetails: SprintIssueDetailsT = await getIssueDetails(
         issue.key
       );
+      /**
+       * For logging purpose (dev only)
+       */
+      const triggeredSignals: number[] = [];
+
       // SIGNAL 1: In progress but no commits
-      score += anaylzeCommitSignal(issue, commitsByIssueKey.has(issueKey));
+      const signal1Score = anaylzeCommitSignal(
+        issue,
+        commitsByIssueKey.has(issueKey)
+      );
+      if (signal1Score > 0) triggeredSignals.push(1);
+      score += signal1Score;
 
       // SIGNAL 2: Stale issue
-      score += anaylzeStaleSignal(issue, commitsByIssueKey.get(issueKey));
+      const signal2Score = anaylzeStaleSignal(
+        issue,
+        commitsByIssueKey.get(issueKey)
+      );
+      if (signal2Score > 0) triggeredSignals.push(2);
+      score += signal2Score;
 
       /**
        * SIGNAL 3: Sprint near end or story points are more than remaining sprint days
        *  - Only stalled in-progress work near sprint end escalates
        *  - Active work stays quiet
        */
-      score += anaylzeSprintNearEndSignal(issue, sprintContext);
+      const signal3Score = anaylzeSprintNearEndSignal(issue, sprintContext);
+      if (signal3Score > 0) triggeredSignals.push(3);
+      score += signal3Score;
 
       // SIGNAL 4: Ownership risk
-      score += anaylzeOwnershipSignal(issue);
+      const signal4Score = anaylzeOwnershipSignal(issue);
+      if (signal4Score > 0) triggeredSignals.push(4);
+      score += signal4Score;
 
       // SIGNAL 5: Issue is in Code Review but missing attached Merge request links
       const [mrSignal, mrSignalScore] = anaylzeMissingMRSignal(issue);
       riskSignals.missingMR = mrSignal;
+      if (mrSignalScore > 0) triggeredSignals.push(5);
       score += mrSignalScore;
 
       // SIGNAL 6: Issue is picked late - story points > left sprint
-      score += analyzeLateStartRisk(issue, sprintContext);
+      const signal6Score = analyzeLateStartRisk(issue, sprintContext);
+      if (signal6Score > 0) triggeredSignals.push(6);
+      score += signal6Score;
 
       // SIGNAL 7: Issue took more than assigned story points
-      score += anaylzeOverDueSignal(issue, issueDetails);
+      const signal7Score = anaylzeOverDueSignal(issue, issueDetails);
+      if (signal7Score > 0) triggeredSignals.push(7);
+      score += signal7Score;
 
       // SIGNAL 8: Issues linked as blockers not resolved
-      score += analyzeBlockedDependenciesSignal(issueDetails);
+      const signal8Score = analyzeBlockedDependenciesSignal(issueDetails);
+      if (signal8Score > 0) triggeredSignals.push(8);
+      score += signal8Score;
 
       if (score > RISK_THRESHOLD) {
         risks.push({
@@ -116,6 +142,9 @@ const analyzeSprintRisks = async (
             ownershipRisk: !issue.fields.assignee,
           },
           issue: issueDetails,
+          // for dev only
+          triggeredSignals:
+            env.config.env !== "production" ? triggeredSignals : undefined,
         });
       }
     }

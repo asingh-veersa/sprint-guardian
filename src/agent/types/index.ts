@@ -9,6 +9,8 @@ export type RiskT = {
   riskScore: number;
   signals: RiskSignalsT;
   issue: SprintIssueDetailsT;
+  // NOTE: for dev logging only (not available in production)
+  triggeredSignals?: number[];
 };
 
 export type RiskSignalsT = {
