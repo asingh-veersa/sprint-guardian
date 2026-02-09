@@ -19,6 +19,7 @@ import { applyAgentMemory, updateAgentMemory } from "./memory/agent-memory";
 import decisionEngine from "./decision-engine";
 import { SprintIssueT } from "../integrations/types";
 import { llmAnalyzedRiskT, RiskT } from "./types";
+import logRisks from "../logger/risks-logger";
 
 export const runSprintGuardian = async (): Promise<
   [
@@ -30,6 +31,7 @@ export const runSprintGuardian = async (): Promise<
 > => {
   const scenarioName = env.config.scenario;
   const scenario = scenarioName ? scenarios[scenarioName] : null;
+  const isProdMode: boolean = env.config.env === "production";
 
   if (scenario) {
     await runSpinner(
@@ -95,6 +97,12 @@ export const runSprintGuardian = async (): Promise<
   // cleanup resolved issues
   await cleanupResolvedIssues(issues.map((i) => i.key));
   const memoryAwareRisks = await applyAgentMemory(risks);
+
+  /**
+   * Logging (for dev purposes)
+   */
+  if (!isProdMode) logRisks(risks, memoryAwareRisks);
+
   if (memoryAwareRisks.length === 0) {
     analyzeStep.succeed("No new or escalated risks detected 🎉");
     return [issues, risks, [], []];
