@@ -2,6 +2,7 @@
 
 
 [![Sprint Guardian Daily Run](https://github.com/asingh-veersa/sprint-guardian/actions/workflows/sprint-guardian.yml/badge.svg)](https://github.com/asingh-veersa/sprint-guardian/actions/workflows/sprint-guardian.yml)
+[🔗 Click here for Pitch deck 😊](https://www.canva.com/design/DAG-BId3MN4/5DdMtx8GTw1yK85SC0YieA/edit?utm_content=DAG-BId3MN4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ![Sprint Guardian](readme/image.png)
 
