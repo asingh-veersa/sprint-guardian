@@ -13,6 +13,21 @@ const RiskMemorySchema = new Schema(
     active: { type: Boolean, default: true },
     // experimental
     confidence: { type: String, required: false },
+    sprintName: { type: String, required: true },
+    riskHistory: {
+      type: [
+        {
+          sprintName: { type: String, required: true },
+          riskScore: { type: Number, required: true },
+          severity: {
+            type: String,
+            enum: ["LOW", "MEDIUM", "HIGH"],
+            required: true,
+          },
+        },
+      ],
+      required: false,
+    },
   },
   {
     timestamps: true,

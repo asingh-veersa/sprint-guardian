@@ -8,6 +8,8 @@ import {
 } from "../utils/integrations.util";
 import fs from "fs/promises";
 import scenarios from "../mock/scenarios";
+import { Sprint, SprintState } from "../db/schema/sprint.schema";
+import { dbUpdateSprintDetails } from "../utils/db.utils";
 
 const jira = axios.create({
   baseURL: env.jira.baseUrl,
@@ -28,9 +30,23 @@ export async function getActiveSprint(boardId: number): Promise<SprintDetailT> {
     `/rest/agile/1.0/board/${boardId}/sprint?state=active`
   );
 
-  // console.log("active sprint: ", res.data.values?.[0]);
+  const currSprint = res.data.values?.[0];
 
-  return res.data.values?.[0] || null;
+  if (currSprint) {
+    const sprintData = new Sprint({
+      boardId: currSprint.originBoardId,
+      sprintId: currSprint.id,
+      name: currSprint.name,
+      state: SprintState.ACTIVE,
+      goal: currSprint.goal,
+      startData: currSprint?.startDate,
+      endData: currSprint?.endDate,
+    });
+
+    dbUpdateSprintDetails(sprintData);
+  }
+
+  return currSprint || null;
 }
 
 /**
@@ -158,9 +174,9 @@ export async function getIssueDetails(issueIdOrKey: string) {
   const scenarioName = env.config.scenario;
   const scenario = scenarioName ? scenarios[scenarioName] : null;
 
-  if(scenario){
+  if (scenario) {
     // NOTE: always filter issue by key and not id in case of running scenario for sake of simplicity.
-    return scenario.issueDetails?.find(issue => issue.key === issueIdOrKey)
+    return scenario.issueDetails?.find((issue) => issue.key === issueIdOrKey);
   }
 
   // REAL TIME DATA

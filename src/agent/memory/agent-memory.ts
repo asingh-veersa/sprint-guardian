@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { llmAnalyzedRiskT, RiskT } from "../types";
 import { RiskMemory } from "../../db/schema/risk-memory.schema";
+import { SprintDetailT } from "../../integrations/types";
 
 const getSeverityFromScore = (score: number) => {
   if (score >= 50) return "HIGH";
@@ -19,7 +20,8 @@ export type MemoryAwareRiskT = RiskT & {
 
 // will provide memory to help determine if the risks are new or are already reported
 export const applyAgentMemory = async (
-  risks: RiskT[]
+  risks: RiskT[],
+  sprintContext: SprintDetailT
 ): Promise<MemoryAwareRiskT[]> => {
   const now = DateTime.now();
   const actionable: MemoryAwareRiskT[] = [];
@@ -39,6 +41,7 @@ export const applyAgentMemory = async (
         lastRiskScore: risk.riskScore,
         lastSeverity: severity,
         lastAltertedAt: now.toJSDate(),
+        sprintName: sprintContext.name,
       });
 
       actionable.push({
@@ -60,6 +63,22 @@ export const applyAgentMemory = async (
     // supress noise
     if (!severityEscalated && hoursSinceLastAlert < ALERT_COOLDOWN_HOURS) {
       continue;
+    }
+
+    /**
+     * Detecting sprint change: record that this issue was risky in a previous sprint
+     */
+    if (existing.sprintName !== sprintContext.name) {
+      const prevSprint = {
+        sprintName: existing.sprintName,
+        riskScore: existing.lastRiskScore,
+        severity: existing.lastSeverity,
+      };
+      if (Array.isArray(existing.riskHistory)) {
+        existing.riskHistory.unshift(prevSprint);
+      } else {
+        existing.set("riskHistory", [prevSprint]);
+      }
     }
 
     // update memory

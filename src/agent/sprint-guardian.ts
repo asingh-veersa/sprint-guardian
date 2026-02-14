@@ -101,8 +101,7 @@ export const runSprintGuardian = async (): Promise<
    */
   // cleanup resolved issues
   await cleanupResolvedIssues(issues.map((i) => i.key));
-  const memoryAwareRisks = await applyAgentMemory(risks);
-  console.log("memory aware risk: ", memoryAwareRisks);
+  const memoryAwareRisks = await applyAgentMemory(risks, sprintContext);
 
   /**
    * Logging (enabled for both prod and dev)
