@@ -70,7 +70,7 @@ const analyzeSprintRisks = async (
         issue.key
       );
       /**
-       * For logging purpose (dev only)
+       * For logging purpose
        */
       const triggeredSignals: number[] = [];
 

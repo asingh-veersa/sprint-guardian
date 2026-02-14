@@ -42,6 +42,7 @@ export enum PauseDuration {
 
 export const pause = (ms = PauseDuration.SHORT) => {
   // skipping loaders in dev mode
+  // NOTE: This will stop showing loaders delay for faster response but provide less better UI - comment this out in case of running scenario mode for better UI
   if (env.config.env !== "production") {
     return;
   }
@@ -54,6 +55,7 @@ export const runSpinner = async (
   callback?: () => Promise<void>
 ): Promise<void> => {
   // skipping loaders in dev mode
+  // NOTE: This will stop showing loaders delay for faster response but provide less better UI - comment this out in case of running scenario mode for better UI
   if (env.config.env !== "production") {
     await callback?.();
     return;

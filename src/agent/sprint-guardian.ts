@@ -27,7 +27,11 @@ export const runSprintGuardian = async (): Promise<
     issues: SprintIssueT[],
     risks: RiskT[],
     positives: llmAnalyzedRiskT[],
-    confirmedInsights: llmAnalyzedRiskT[]
+    confirmedInsights: llmAnalyzedRiskT[],
+    /**
+     * To inform that the previous detected risks still exists
+     */
+    oldRisksStillHold?: boolean
   ]
 > => {
   const scenarioName = env.config.scenario;
@@ -98,6 +102,7 @@ export const runSprintGuardian = async (): Promise<
   // cleanup resolved issues
   await cleanupResolvedIssues(issues.map((i) => i.key));
   const memoryAwareRisks = await applyAgentMemory(risks);
+  console.log("memory aware risk: ", memoryAwareRisks);
 
   /**
    * Logging (enabled for both prod and dev)
@@ -106,7 +111,7 @@ export const runSprintGuardian = async (): Promise<
 
   if (memoryAwareRisks.length === 0) {
     analyzeStep.succeed("No new or escalated risks detected 🎉");
-    return [issues, risks, [], []];
+    return [issues, risks, [], [], risks.length > 0 ? true : false];
   }
 
   /**

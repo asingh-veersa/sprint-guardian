@@ -14,14 +14,17 @@ await pause(2000 as any);
 spinner.succeed("System ready!");
 await pause(1000);
 
-const [issues, risks, positives, confirmedInsights] = await runSprintGuardian();
+const [issues, risks, positives, confirmedInsights, oldRisksStillHold] =
+  await runSprintGuardian();
+
+const slackMessage = oldRisksStillHold
+  ? `⚠️ No new risks found, but there are still outstanding risks from previous scans.\nPlease review the existing risks and take necessary action. 🛠️`
+  : `Sprint Guardian scanned all issues — no risks found today.\nGreat job keeping everything moving smoothly! 🚀`;
 
 // in case 0 risks found
 if (confirmedInsights.length === 0) {
   try {
-    await sendSlackMessage(
-      `Sprint Guardian scanned all issues — no risks found today.\nGreat job keeping everything moving smoothly! 🚀`
-    );
+    await sendSlackMessage(slackMessage);
     console.log("Slack message sent!");
   } catch (err: any) {
     console.error("Slack error: ", err.data || err);
@@ -44,6 +47,3 @@ Decision made  : ${confirmedInsights.length}
 );
 
 process.exit();
-
-// getJiraFields()
-// getIssueDetails('FUEL-278')
