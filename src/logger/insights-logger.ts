@@ -1,10 +1,14 @@
 import path from "path";
 import { llmAnalyzedRiskT } from "../agent/types";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { isProductionActive } from "../config/env";
 
 const logInsights = (risks: llmAnalyzedRiskT[]): void => {
   // Ensure logs directory exists
-  const logsDir = path.resolve(process.cwd(), "log/insights");
+  const dirPath = isProductionActive
+    ? "log/production/insights"
+    : "log/insights";
+  const logsDir = path.resolve(process.cwd(), dirPath);
   if (!existsSync(logsDir)) {
     mkdirSync(logsDir, { recursive: true });
   }

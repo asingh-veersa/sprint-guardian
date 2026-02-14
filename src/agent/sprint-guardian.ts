@@ -100,9 +100,9 @@ export const runSprintGuardian = async (): Promise<
   const memoryAwareRisks = await applyAgentMemory(risks);
 
   /**
-   * Logging (for dev purposes)
+   * Logging (enabled for both prod and dev)
    */
-  if (!isProdMode) logRisks(risks, memoryAwareRisks);
+  logRisks(risks, memoryAwareRisks);
 
   if (memoryAwareRisks.length === 0) {
     analyzeStep.succeed("No new or escalated risks detected 🎉");
@@ -116,9 +116,9 @@ export const runSprintGuardian = async (): Promise<
   reasonStep.start();
   const insights = await performGenAiAnalysis(memoryAwareRisks, sprintContext);
   /**
-   * Logging (for dev purposes)
+   * Logging (enabled for both prod and dev)
    */
-  if (!isProdMode) logInsights(insights);
+  logInsights(insights);
 
   if (!insights || insights.length === 0) {
     reasonStep.warn("LLM returned no actionable insights");

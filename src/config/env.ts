@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const isProductionActive: boolean = process.env.NODE_ENV === "production";
+export const isProductionActive: boolean = process.env.NODE_ENV === "production";
 
 const env = {
   port: process.env.PORT,
@@ -30,7 +30,10 @@ const env = {
   },
   slack: {
     token: process.env.SLACK_BOT_TOKEN,
-    channel: process.env.SLACK_CHANNEL,
+    channel: {
+      dev: process.env.SLACK_CHANNEL_DEV,
+      prod: process.env.SLACK_CHANNEL_PROD,
+    },
   },
   gitlab: {
     token: process.env.GITLAB_TOKEN,

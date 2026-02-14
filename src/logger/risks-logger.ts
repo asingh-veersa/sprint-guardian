@@ -2,13 +2,15 @@ import path from "path";
 import { MemoryAwareRiskT } from "../agent/memory/agent-memory";
 import { RiskT } from "../agent/types";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { isProductionActive } from "../config/env";
 
 const logRisks = (
   risks: RiskT[],
   memoryAwareRisks: MemoryAwareRiskT[]
 ): void => {
   // Ensure logs directory exists
-  const logsDir = path.resolve(process.cwd(), "log/risks");
+  const dirPath = isProductionActive ? "log/production/risks" : "log/risks"
+  const logsDir = path.resolve(process.cwd(), dirPath);
   if (!existsSync(logsDir)) {
     mkdirSync(logsDir, { recursive: true });
   }
