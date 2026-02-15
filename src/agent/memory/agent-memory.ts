@@ -79,6 +79,8 @@ export const applyAgentMemory = async (
       } else {
         existing.set("riskHistory", [prevSprint]);
       }
+      // update sprint name to latest one
+      existing.sprintName = sprintContext.name;
     }
 
     // update memory
