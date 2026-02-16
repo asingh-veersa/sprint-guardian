@@ -51,3 +51,16 @@ jobs:
           MONGODB_DATABASE_PROD: ${{ secrets.MONGODB_DATABASE_PROD }}
 
         run: npm run start
+
+      - name: Check tmp directory
+        run: |
+          ls -R /tmp/sprint-guardian || echo "No logs created"
+
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sprint-guardian-logs
+          path: /tmp/sprint-guardian/logs
+
