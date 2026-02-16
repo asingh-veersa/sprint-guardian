@@ -1,0 +1,28 @@
+name: Test Slack Communication
+
+on:
+  workflow_dispatch: {} # Allow manual trigger only
+
+jobs:
+  test-slack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Test Slack Communication
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_DEV: '#sprint-alerts'
+          SLACK_CHANNEL_PROD: '#sprint-alerts-production'
+          NODE_ENV: development
+        run: npx tsx src/test-slack.ts
