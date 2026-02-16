@@ -22,7 +22,5 @@ jobs:
       - name: Test Slack Communication
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_DEV: '#sprint-alerts'
           SLACK_CHANNEL_PROD: '#sprint-alerts-production'
-          NODE_ENV: development
         run: npx tsx src/test-slack.ts
