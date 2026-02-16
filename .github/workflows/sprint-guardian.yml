@@ -15,7 +15,7 @@ jobs:
       - name: Checkout latest code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Ensure we get all history (latest code including tags/branches)
+          fetch-depth: 0 # Ensure we get all history (latest code including tags/branches)
 
       - name: Show current commit
         run: git rev-parse HEAD
@@ -39,8 +39,8 @@ jobs:
           GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
 
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL: '#sprint-alerts-production'
-          
+          SLACK_CHANNEL: "#sprint-alerts-production"
+
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_BASE_URL: ${{ secrets.GITLAB_BASE_URL }}
           GITLAB_PROJECT_IDS: ${{ secrets.GITLAB_PROJECT_IDS }}
@@ -56,11 +56,9 @@ jobs:
         run: |
           ls -R /tmp/sprint-guardian || echo "No logs created"
 
-
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: sprint-guardian-logs
           path: /tmp/sprint-guardian/logs
-
