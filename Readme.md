@@ -1,16 +1,46 @@
 # Project Sentinel - Sprint Guardian 🛡️
 
-
 [![Sprint Guardian Daily Run](https://github.com/asingh-veersa/sprint-guardian/actions/workflows/sprint-guardian.yml/badge.svg)](https://github.com/asingh-veersa/sprint-guardian/actions/workflows/sprint-guardian.yml)
 
 [🔗 Click here for Pitch deck 😊](https://www.canva.com/design/DAG-BId3MN4/5DdMtx8GTw1yK85SC0YieA/edit?utm_content=DAG-BId3MN4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ![Sprint Guardian](readme/image.png)
 
-
 **AI-powered Sprint Risk Analysis System**
 
 Sprint Guardian (also known as Project Sentinel) is an intelligent monitoring system that analyzes active sprints in Jira, tracks development activity in GitLab, and proactively identifies risks that could impact sprint delivery. It uses AI to provide contextual insights and automatically notifies teams via Slack.
+
+---
+
+## 📊 Metabase Dashboard Integration
+
+Sprint Guardian supports interactive, real-time analysis via a customizable Metabase dashboard. Use the dashboard to visually explore all risks, issue histories, velocity, and overall sprint health — empowering teams and managers with transparency beyond daily notification feeds.
+
+You can connect Metabase directly to the MongoDB database used by Sprint Guardian and build your own analytics or use provided example queries. By default, Metabase is run locally via Docker for simple setup and secure internal access.
+
+**Example Dashboard Screenshot:**
+
+![Metabase Dashboard](readme/metabase.png)
+
+### Running Metabase with Docker
+
+To launch Metabase for local analytics:
+
+```bash
+docker run -d -p 3000:3000 \
+  -e "MB_DB_TYPE=mongodb" \
+  -e "MB_DB_CONNECTION_URI=mongodb://<username>:<password>@<host>:<port>/<database>" \
+  --name metabase metabase/metabase
+```
+
+- Replace `<username>`, `<password>`, `<host>`, `<port>`, and `<database>` as appropriate for your MongoDB environment (matching your `.env`).
+- Access the dashboard at [http://localhost:3000](http://localhost:3000).
+- On first launch, complete the wizard and add a connection using your Sprint Guardian MongoDB URI/databases.
+- You can create, share, or export dashboards with your team.
+
+> _Note: Only local (not publicly hosted) Metabase is supported out-of-the-box. For production deployments, see [Metabase deployment docs](https://www.metabase.com/docs/latest/operations-guide/start.html)._
+
+---
 
 ## 🎯 Features
 
@@ -181,10 +211,13 @@ The system will:
 7. Run decision engine to confirm actionable risks
 8. Send Slack notifications for confirmed risks
 
-### Scheduled Execution
+### Metabase Dashboard
 
-Use the scheduler (`src/scheduler/sprintCheck.js`) with cron to run automatically:
+To explore historical trends, open issues, sprint risk summaries, and all results detected by Sprint Guardian in a single visual analytics interface:
 
+1. Make sure your MongoDB (used by Sprint Guardian) is running.
+2. Start Metabase with the Docker command above (or your preferred method).
+3. Access the dashboard at [http://localhost:3001](http://localhost:3001) in your browser.
 ```javascript
 // Example: Run every day at 9 AM
 import cron from 'node-cron';
