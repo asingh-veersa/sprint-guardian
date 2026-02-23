@@ -8,6 +8,17 @@
 
 **AI-powered Sprint Risk Analysis System**
 
+---
+
+## 🎥 Explainer Video
+
+Check out this short demo/explainer video of Sprint Guardian:  
+[▶️ Watch the video](https://drive.google.com/file/d/1hhwyMcy1eE4zPxts8uh1gPgVThzcZ38c/view?usp=sharing)
+
+> _Heads up: The video is a bit fast-forwarded to keep things concise—please bear with it!_
+
+---
+
 Sprint Guardian (also known as Project Sentinel) is an intelligent monitoring system that analyzes active sprints in Jira, tracks development activity in GitLab, and proactively identifies risks that could impact sprint delivery. It uses AI to provide contextual insights and automatically notifies teams via Slack.
 
 ---
