@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { SprintDetailT, SprintIssueT } from "../integrations/types";
+import { Issue } from "jira.js/version3/models/issue";
 
 export enum TicketState {
   TO_DO = "to do",
@@ -27,14 +27,14 @@ export const getRemainingSprintDays = (endDate?: string): number | null => {
 
 export const getStaleDays = (lastUpdated?: string) => {
   if (!lastUpdated) return 0;
-  
+
   const lastUpdatedIso = DateTime.fromISO(lastUpdated);
   return Math.floor(DateTime.now().diff(lastUpdatedIso, "days").days);
 };
 
-export const getIssueStatus = (issue: SprintIssueT): string | undefined =>
-  issue.fields.status?.name?.toLowerCase();
+export const getIssueStatus = (issue: Issue): string =>
+  issue.fields.status?.name?.toLowerCase() ?? "To do";
 
-export const getIssueStoryPoints = (issue: SprintIssueT): number => {
+export const getIssueStoryPoints = (issue: Issue): number => {
   return Number(issue.fields.story_point_estimate ?? "0");
 };

@@ -1,14 +1,17 @@
 import {
-  SprintIssueT,
-  CommitT,
+  CommitSchemaWithProjectId,
   SprintDetailT,
-  SprintIssueDetailsT,
 } from "../../integrations/types";
+import { Issue } from "jira.js/version3/models/issue";
 
 export type SprintScenarioT = {
   name: string;
   sprintContext: SprintDetailT;
-  issues: SprintIssueT[];
-  commits: CommitT[];
-  issueDetails?: SprintIssueDetailsT[];
+  issues: Issue[];
+  commits: {
+    master: CommitSchemaWithProjectId[];
+    mr: CommitSchemaWithProjectId[];
+    projectId: number;
+  }[];
+  issueDetails?: Issue[];
 };

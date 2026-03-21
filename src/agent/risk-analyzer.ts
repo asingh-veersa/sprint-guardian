@@ -12,16 +12,16 @@ import {
   getStaleDays,
   TicketState,
 } from "../utils/agent.utils";
-import anaylzeCommitSignal from "./risks/without-commits";
-import anaylzeStaleSignal from "./risks/stale-issue";
+import anaylzeCommitSignal from "./signals/base/without-commits";
+import anaylzeStaleSignal from "./signals/base/stale-issue";
 import { RISK_THRESHOLD, SPRINT_END_THRESHOLD } from "./config";
-import anaylzeSprintNearEndSignal from "./risks/sprint-near-end-issue";
-import anaylzeOwnershipSignal from "./risks/ownership-risk";
-import anaylzeMissingMRSignal from "./risks/missing-merge-request";
-import analyzeLateStartRisk from "./risks/late-start";
+import anaylzeSprintNearEndSignal from "./signals/base/sprint-near-end-issue";
+import anaylzeOwnershipSignal from "./signals/base/ownership-risk";
+import anaylzeMissingMRSignal from "./signals/base/missing-merge-request";
+import analyzeLateStartRisk from "./signals/base/late-start";
 import { getIssueDetails } from "../integrations/jira";
-import anaylzeOverDueSignal from "./risks/over-due";
-import analyzeBlockedDependenciesSignal from "./risks/blocked-dependencies";
+import anaylzeOverDueSignal from "./signals/base/over-due";
+import analyzeBlockedDependenciesSignal from "./signals/base/blocked-dependencies";
 import env from "../config/env";
 
 const shouldTrackIssue = (

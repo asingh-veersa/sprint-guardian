@@ -1,3 +1,5 @@
+import { CommitSchema } from "@gitbeaker/rest";
+
 export type CommitT = {
   id: string;
   projectId: number;
@@ -10,6 +12,9 @@ export type CommitT = {
   committerDate: string;
 };
 
+/**
+ * @deprecated
+ */
 export type JiraFieldT = {
   id: string;
   key: string;
@@ -31,6 +36,9 @@ export type JiraFieldT = {
   };
 };
 
+/**
+ * @deprecated This function is deprecated. Use types from jira.ts instead
+ */
 export type SprintIssueT = {
   expand?: string;
   id: string;
@@ -39,6 +47,9 @@ export type SprintIssueT = {
   fields: SprintIssueFieldsT;
 };
 
+/**
+ * @deprecated This function is deprecated. Use types from jira.ts instead
+ */
 export type SprintIssueDetailsT = Omit<SprintIssueT, "fields"> & {
   fields: Record<string, any>;
 };
@@ -182,6 +193,8 @@ type SprintWorklogT = {
   }[];
 };
 
-/**
- * Sub types for Sprint Issue Ends here
- */
+export interface CommitSchemaWithProjectId extends CommitSchema {
+  projectId: number;
+  // used for commits from merge requests
+  mergeRequestTitle?: string;
+}

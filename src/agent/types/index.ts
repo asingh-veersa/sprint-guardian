@@ -1,3 +1,4 @@
+import { Issue } from "jira.js/version3/models/issue";
 import { SprintIssueDetailsT } from "../../integrations/types";
 
 export type RiskT = {
@@ -7,20 +8,35 @@ export type RiskT = {
   summary: string;
   status: string;
   riskScore: number;
-  signals: RiskSignalsT;
-  issue: SprintIssueDetailsT;
+  signals: SignalsT;
+  issue: Issue;
   // NOTE: for dev logging only (not available in production)
   triggeredSignals?: number[];
 };
 
-export type RiskSignalsT = {
+export interface SignalsT {
+  behavioral: {
+    lateStart: boolean;
+    // velocityDrop: number;
+    progressStall: boolean;
+    statusFlapping: boolean;
+    highChurn: boolean;
+  };
+  base: RiskSignalsT;
+}
+
+/**
+ * @deprecated Use of SignalT is deprecated and may be removed in future releases.
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export interface RiskSignalsT {
   noCommits: boolean;
   daysSinceLastCommit: number | null;
   staleDays: number;
   sprintEnding: boolean;
   missingMR?: boolean;
   ownershipRisk?: boolean;
-};
+}
 
 export enum Decision {
   CONFIRMED = "CONFIRMED",

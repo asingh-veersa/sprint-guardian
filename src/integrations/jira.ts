@@ -6,11 +6,16 @@ import {
   buildJiraFieldMap,
   transformObjectKey,
 } from "../utils/integrations.util";
-import fs from "fs/promises";
 import scenarios from "../mock/scenarios";
 import { Sprint, SprintState } from "../db/schema/sprint.schema";
 import { dbUpdateSprintDetails } from "../utils/db.utils";
+import { Version3Client } from "jira.js";
+import { Issue } from "jira.js/version3/models/issue";
+import { FieldDetails } from "jira.js/version3/models/fieldDetails";
 
+/**
+ * @deprecated Use jiraClient instead.
+ */
 const jira = axios.create({
   baseURL: env.jira.baseUrl,
   auth: {
@@ -22,12 +27,22 @@ const jira = axios.create({
   },
 });
 
+export const jiraClient = new Version3Client({
+  host: env.jira.baseUrl!,
+  authentication: {
+    basic: {
+      email: env.jira.email!,
+      apiToken: env.jira.token!,
+    },
+  },
+});
+
 /**
  * Get active sprint for a board
  */
 export async function getActiveSprint(boardId: number): Promise<SprintDetailT> {
   const res = await jira.get(
-    `/rest/agile/1.0/board/${boardId}/sprint?state=active`
+    `/rest/agile/1.0/board/${boardId}/sprint?state=active`,
   );
 
   const currSprint = res.data.values?.[0];
@@ -51,6 +66,9 @@ export async function getActiveSprint(boardId: number): Promise<SprintDetailT> {
 
 /**
  * Get issues from a sprint
+ */
+/**
+ * @deprecated This function is deprecated and may be removed in future releases. Use getSprintIssuesBySprint instead
  */
 async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
   const sprintObjectResponseFields = [
@@ -96,7 +114,6 @@ async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
 
   const paramFields =
     sprintObjectResponseFields.join(",") + "," + customFields.join(",");
-  // console.log("fields: ", paramFields);
 
   const res = await jira.get(`/rest/agile/1.0/sprint/${sprintId}/issue`, {
     params: {
@@ -104,12 +121,10 @@ async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
     },
   });
 
-  // console.log('issue: ', res.data.issues)
-
   // NOTE: use GET /rest/agile/1.0/issue/{issueIdOrKey} get issue specific data for in depth logic implementation
 
   const fieldMap: Map<string, string> = buildJiraFieldMap(
-    await getJiraFields()
+    await getJiraFields(),
   );
 
   // mapping custom field ids with their names
@@ -131,7 +146,6 @@ async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
       fields: mappedFields, // ✅ replace only fields
     };
   });
-  // console.log(mappedIssues);
 
   // mappedIssues.forEach((i: any) => {
   //   if (i.key === "FUEL-302") {
@@ -150,12 +164,42 @@ async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
   return mappedIssues || [];
 }
 
+async function getSprintIssuesBySprint(sprintId: number): Promise<Issue[]> {
+  const res =
+    await jiraClient.issueSearch.searchForIssuesUsingJqlEnhancedSearch({
+      jql: `sprint=${sprintId}`,
+      fields: ["*all"],
+      expand: "names,schema",
+      maxResults: 100,
+    });
+
+  const jiraFields = await getJiraIssueFields();
+  const fieldMap: Map<string, string> = buildJiraFieldMap(jiraFields);
+
+  // Remap custom field ids to their descriptive snake_case names for each issue
+  const mappedIssues = res.issues?.map((issue: any) => {
+    const mappedFields = { ...issue.fields };
+
+    for (const [key, value] of Object.entries(issue.fields)) {
+      // Check if this field is a custom field that needs renaming
+      if (fieldMap.has(key)) {
+        mappedFields[transformObjectKey(fieldMap.get(key)!)] = value;
+      }
+    }
+
+    return {
+      ...issue,
+      fields: mappedFields,
+    };
+  });
+
+  return mappedIssues ?? [];
+}
+
 /**
  * Public API used by the agent
  */
-export async function getActiveSprintIssues(
-  boardId: number
-): Promise<SprintIssueT[]> {
+export async function getActiveSprintIssues(boardId: number): Promise<Issue[]> {
   const sprint = await getActiveSprint(boardId);
 
   if (!sprint) {
@@ -163,12 +207,15 @@ export async function getActiveSprintIssues(
     return [];
   }
 
-  const issues = await getSprintIssues(sprint.id);
+  const issues = await getSprintIssuesBySprint(sprint.id);
   return issues;
 }
 
 /**
  * Get a particular issue details
+ */
+/**
+ * @deprecated Use getIssueDetailsById instead.
  */
 export async function getIssueDetails(issueIdOrKey: string) {
   const scenarioName = env.config.scenario;
@@ -188,7 +235,7 @@ export async function getIssueDetails(issueIdOrKey: string) {
   });
 
   const fieldMap: Map<string, string> = buildJiraFieldMap(
-    await getJiraFields()
+    await getJiraFields(),
   );
 
   // mapping custom field ids with their names
@@ -213,10 +260,27 @@ export async function getIssueDetails(issueIdOrKey: string) {
   return res.data;
 }
 
+export const getIssueDetailsById = async (
+  issueIdOrKey: string,
+): Promise<Issue> => {
+  const issue = await jiraClient.issues.getIssue({
+    issueIdOrKey,
+    fields: ["*all"],
+    expand: "changelog, renderedFields, names, schema",
+  });
+
+  return issue;
+};
+
 /**
  * Getting metadata of fields used by Jira
+ * @deprecated Use getJiraIssueFields instead.
  */
 export async function getJiraFields() {
   const res: any = await jira.get("/rest/api/3/field");
   return res.data;
 }
+
+export const getJiraIssueFields = async (): Promise<FieldDetails[]> => {
+  return jiraClient.issueFields.getFields();
+};
