@@ -1,5 +1,5 @@
 import env from "../config/env";
-import { getRecentCommits } from "../integrations/gitlab";
+import { getCommitHistory, getRecentCommits } from "../integrations/gitlab";
 import { getActiveSprint, getActiveSprintIssues } from "../integrations/jira";
 import analyzeSprintRisks from "./risk-analyzer";
 import { sendSlackMessage } from "../integrations/slack";
@@ -17,14 +17,15 @@ import { connectMongo } from "../db/mongo";
 import { cleanupResolvedIssues } from "./memory/memory-cleanup";
 import { applyAgentMemory, updateAgentMemory } from "./memory/agent-memory";
 import decisionEngine from "./decision-engine";
-import { SprintIssueT } from "../integrations/types";
 import { llmAnalyzedRiskT, RiskT } from "./types";
 import logRisks from "../logger/risks-logger";
 import logInsights from "../logger/insights-logger";
+import { Issue } from "jira.js/version3/models/issue";
+import signalAnalyzer from "./signal-anaylzer";
 
 export const runSprintGuardian = async (): Promise<
   [
-    issues: SprintIssueT[],
+    issues: Issue[],
     risks: RiskT[],
     positives: llmAnalyzedRiskT[],
     confirmedInsights: llmAnalyzedRiskT[],
@@ -36,7 +37,6 @@ export const runSprintGuardian = async (): Promise<
 > => {
   const scenarioName = env.config.scenario;
   const scenario = scenarioName ? scenarios[scenarioName] : null;
-  const isProdMode: boolean = env.config.env === "production";
 
   if (scenario) {
     await runSpinner(
@@ -80,7 +80,7 @@ export const runSprintGuardian = async (): Promise<
   await pause(PauseDuration.LONG);
   const [issues, commits] = scenario
     ? [scenario.issues, scenario.commits]
-    : await Promise.all([getActiveSprintIssues(boardId), getRecentCommits()]);
+    : await Promise.all([getActiveSprintIssues(boardId), getCommitHistory()]);
 
   observeStep.succeed(
     `Observed ${issues.length} issues and ${commits.length} commits`
@@ -93,7 +93,7 @@ export const runSprintGuardian = async (): Promise<
   analyzeStep.start();
   await pause(PauseDuration.LONG);
 
-  const risks = await analyzeSprintRisks(issues, commits, sprintContext);
+  const risks = await signalAnalyzer(issues, commits, sprintContext);
   analyzeStep.warn(`Detected ${risks.length} potential risks`);
 
   /**
@@ -101,6 +101,7 @@ export const runSprintGuardian = async (): Promise<
    */
   // cleanup resolved issues
   await cleanupResolvedIssues(issues.map((i) => i.key));
+
   const memoryAwareRisks = await applyAgentMemory(risks, sprintContext);
 
   /**

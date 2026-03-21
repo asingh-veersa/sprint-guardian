@@ -13,6 +13,9 @@ import { Version3Client } from "jira.js";
 import { Issue } from "jira.js/version3/models/issue";
 import { FieldDetails } from "jira.js/version3/models/fieldDetails";
 
+/**
+ * @deprecated Use jiraClient instead.
+ */
 const jira = axios.create({
   baseURL: env.jira.baseUrl,
   auth: {
@@ -111,15 +114,12 @@ async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
 
   const paramFields =
     sprintObjectResponseFields.join(",") + "," + customFields.join(",");
-  // console.log("fields: ", paramFields);
 
   const res = await jira.get(`/rest/agile/1.0/sprint/${sprintId}/issue`, {
     params: {
       fields: paramFields,
     },
   });
-
-  // console.log('issue: ', res.data.issues)
 
   // NOTE: use GET /rest/agile/1.0/issue/{issueIdOrKey} get issue specific data for in depth logic implementation
 
@@ -146,7 +146,6 @@ async function getSprintIssues(sprintId: number): Promise<SprintIssueT[]> {
       fields: mappedFields, // ✅ replace only fields
     };
   });
-  // console.log(mappedIssues);
 
   // mappedIssues.forEach((i: any) => {
   //   if (i.key === "FUEL-302") {
@@ -209,7 +208,6 @@ export async function getActiveSprintIssues(boardId: number): Promise<Issue[]> {
   }
 
   const issues = await getSprintIssuesBySprint(sprint.id);
-  console.log("issues: ", issues);
   return issues;
 }
 

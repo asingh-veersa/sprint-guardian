@@ -1,3 +1,4 @@
+import { Issue } from "jira.js/version3/models/issue";
 import { SprintIssueDetailsT } from "../../integrations/types";
 
 export type RiskT = {
@@ -7,18 +8,21 @@ export type RiskT = {
   summary: string;
   status: string;
   riskScore: number;
-  signals: RiskSignalsT;
-  issue: SprintIssueDetailsT;
+  signals: SignalsT;
+  issue: Issue;
   // NOTE: for dev logging only (not available in production)
   triggeredSignals?: number[];
 };
 
-export interface SignalsT extends RiskSignalsT {
-  lateStart: boolean;
-  velocityDrop: number;
-  progressStall: boolean;
-  statusFlapping: boolean;
-  highChurn: boolean;
+export interface SignalsT {
+  behavioral: {
+    lateStart: boolean;
+    // velocityDrop: number;
+    progressStall: boolean;
+    statusFlapping: boolean;
+    highChurn: boolean;
+  };
+  base: RiskSignalsT;
 }
 
 /**

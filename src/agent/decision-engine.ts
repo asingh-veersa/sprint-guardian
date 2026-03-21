@@ -1,10 +1,7 @@
 import { Decision, llmAnalyzedRiskT, Urgency } from "./types";
 
 const decisionEngine = (risks: llmAnalyzedRiskT[]): llmAnalyzedRiskT[] =>
-  risks.filter(
-    (risk) =>
-      risk.decision === Decision.CONFIRMED &&
-      (risk.urgency === Urgency.IMMEDIATE || risk.urgency === Urgency.TODAY)
-  );
+  // passing all type of severity for now
+  risks.filter((risk) => risk.decision !== Decision.IGNORE);
 
 export default decisionEngine;
