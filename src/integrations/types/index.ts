@@ -10,6 +10,9 @@ export type CommitT = {
   committerDate: string;
 };
 
+/**
+ * @deprecated
+ */
 export type JiraFieldT = {
   id: string;
   key: string;
@@ -39,6 +42,9 @@ export type SprintIssueT = {
   fields: SprintIssueFieldsT;
 };
 
+/**
+ * @deprecated This function is deprecated. Use types from jira.ts instead
+ */
 export type SprintIssueDetailsT = Omit<SprintIssueT, "fields"> & {
   fields: Record<string, any>;
 };

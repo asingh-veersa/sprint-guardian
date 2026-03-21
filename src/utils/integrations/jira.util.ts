@@ -1,15 +1,15 @@
-import { JiraFieldT } from "../../integrations/types";
+import { FieldDetails } from "jira.js/version2/models/fieldDetails";
 
 export function extractJiraKeys(text: string) {
   const regex = /[A-Z]+-\d+/g;
   return text.match(regex) || [];
 }
 
-export function buildJiraFieldMap(fields: JiraFieldT[]) {
+export function buildJiraFieldMap(fields: FieldDetails[]) {
   const map: Map<string, string> = new Map();
 
   for (const field of fields) {
-    map.set(field.id, field.name);
+    map.set(field.id ?? '', field.name ?? '');
   }
 
   return map;

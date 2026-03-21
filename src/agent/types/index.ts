@@ -13,14 +13,26 @@ export type RiskT = {
   triggeredSignals?: number[];
 };
 
-export type RiskSignalsT = {
+export interface SignalsT extends RiskSignalsT {
+  lateStart: boolean;
+  velocityDrop: number;
+  progressStall: boolean;
+  statusFlapping: boolean;
+  highChurn: boolean;
+}
+
+/**
+ * @deprecated Use of SignalT is deprecated and may be removed in future releases.
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export interface RiskSignalsT {
   noCommits: boolean;
   daysSinceLastCommit: number | null;
   staleDays: number;
   sprintEnding: boolean;
   missingMR?: boolean;
   ownershipRisk?: boolean;
-};
+}
 
 export enum Decision {
   CONFIRMED = "CONFIRMED",
