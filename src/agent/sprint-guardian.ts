@@ -32,7 +32,7 @@ export const runSprintGuardian = async (): Promise<
     /**
      * To inform that the previous detected risks still exists
      */
-    oldRisksStillHold?: boolean
+    oldRisksStillHold?: boolean,
   ]
 > => {
   const scenarioName = env.config.scenario;
@@ -41,7 +41,7 @@ export const runSprintGuardian = async (): Promise<
   if (scenario) {
     await runSpinner(
       "Activating environment...",
-      `Mock environment activated - '${scenario.name}'`
+      `Mock environment activated - '${scenario.name}'`,
     );
   }
 
@@ -60,7 +60,7 @@ export const runSprintGuardian = async (): Promise<
     "🧠 Database connected successfully",
     async () => {
       await connectMongo();
-    }
+    },
   );
 
   /**
@@ -83,7 +83,7 @@ export const runSprintGuardian = async (): Promise<
     : await Promise.all([getActiveSprintIssues(boardId), getCommitHistory()]);
 
   observeStep.succeed(
-    `Observed ${issues.length} issues and ${commits.length} commits`
+    `Observed ${issues.length} issues and ${commits.length} commits`,
   );
 
   /**
@@ -100,7 +100,7 @@ export const runSprintGuardian = async (): Promise<
    * Memory layer
    */
   // cleanup resolved issues
-  await cleanupResolvedIssues(issues.map((i) => i.key));
+  await cleanupResolvedIssues(risks.map((r) => r.issueKey));
 
   const memoryAwareRisks = await applyAgentMemory(risks, sprintContext);
 

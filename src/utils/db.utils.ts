@@ -20,3 +20,11 @@ export const dbUpdateSprintDetails = async (newData: any) => {
     await Sprint.create(newData);
   }
 };
+
+export const dbGetActiveSprint = async (): Promise<InstanceType<typeof Sprint> | null> => {
+  const currSprint = await Sprint.findOne({
+    state: SprintState.ACTIVE,
+  });
+
+  return currSprint;
+};
