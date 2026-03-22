@@ -21,7 +21,7 @@ export const cleanupResolvedIssues = async (
           }
         : { active: true, sprintName: currSprint?.name };
 
-    const result = await RiskMemory.updateMany(filter, {
+    await RiskMemory.updateMany(filter, {
       $set: { active: false },
     });
   } catch (error) {
